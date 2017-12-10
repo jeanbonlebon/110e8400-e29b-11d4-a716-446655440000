@@ -1,0 +1,27 @@
+{
+  "name": "supfile_api",
+  "version": "1.0.0",
+  "description": "API for SuFile Project SUPINFO MSC",
+  "main": "serveur.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robin Gross",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
+    "js-sha3": "^0.7.0",
+    "jsonwebtoken": "^8.1.0",
+    "mkdirp": "^0.5.1",
+    "mongoose": "^4.10.8",
+    "mv": "^2.1.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^3.0.1",
+    "passport-local": "^1.0.0",
+    "q": "^1.5.1",
+    "rmdir": "^1.2.0"
+  }
+}
