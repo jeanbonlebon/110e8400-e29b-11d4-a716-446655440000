@@ -10,7 +10,7 @@ const Q = require('q'),
       Folder = require('../models/folder');
 
 const folderMultiUpdate = require('../helpers/folderMultiUpdate'),
-      folderPathUpdate = require('../helpers/folderPathUpdate');
+      folderUpdateMovePath = require('../helpers/folderUpdateMovePath');
 
 var controller = {};
 
@@ -98,21 +98,47 @@ function MOVE_Folder(toID, fromID, userID) {
         Folder.findOne({ _id : toID, user : userID }, function(err, toFolder) {
             if (err) deferred.reject(err)
 
-            Folder.find({ parents : { $in : [fromFolder._id] } }).lean().exec(function(err, childs) {
+            Folder.find({ parents : fromFolder._id }).lean().exec(function(err, childs) {
                 if (err) deferred.reject(err)
+
+                let racinePath = '../folders/' + sha3_256(toFolder.user.toString())
+                let oldPath = fromFolder.path
 
                 if(fromFolder.parent =! null) {
                     childs.forEach(x => x.parents = _.differenceWith(x.parents, fromFolder.parents,  _.isEqual))
                 }
+
                 childs.forEach(x => {
-                    x.parents = _.concat(x.parents, toFolder.parents)
-                    x.path = folderPathUpdate(fromFolder, toFolder, x.path)
+                    x.parents = _.union(x.parents, toFolder.parents)
+                    x.parents.push(toFolder._id)
+                    x.path = folderUpdateMovePath(fromFolder, toFolder, x.path)
                 })
+
                 fromFolder.parent = toFolder._id
-                console.log('------------------------------------')
-                //console.log(childs)
-                console.log('------------------------------------')
-                deferred.resolve()
+                fromFolder.parents = toFolder.parents
+                fromFolder.parents.push(toFolder._id)
+                fromFolder.path = toFolder.path + '/' + fromFolder.name
+
+                let arrayRes = []
+                let documents = childs
+                documents.push(fromFolder)
+
+                for(let i = 0; i < documents.length; i++)
+                {
+                    arrayRes.push(folderMultiUpdate(documents[i]))
+                }
+
+                Promise.all(arrayRes)
+                    .then(res => {
+
+                        mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
+                            if (err) deferred.reject(err)
+
+                            deferred.resolve()
+                        })
+
+                    })
+                    .catch(err => { deferred.reject(err) })
             })
         })
     })
