@@ -1,5 +1,6 @@
 const Q = require('q'),
-      mongoose   = require('mongoose'),
+      mongoose = require('mongoose'),
+      _ = require('lodash'),
       sha3_256 = require('js-sha3').sha3_256,
       fs = require('fs'),
       mkdirp = require('mkdirp'),
@@ -8,12 +9,14 @@ const Q = require('q'),
       User = require('../models/user'),
       Folder = require('../models/folder');
 
-const folderMultiUpdate = require('../helpers/folderMultiUpdate');
+const folderMultiUpdate = require('../helpers/folderMultiUpdate'),
+      folderPathUpdate = require('../helpers/folderPathUpdate');
 
 var controller = {};
 
 controller.POST_Folder = POST_Folder;
 controller.GET_Folder = GET_Folder;
+controller.MOVE_Folder = MOVE_Folder;
 controller.RENAME_Folder = RENAME_Folder;
 controller.DELETE_Folder = DELETE_Folder;
 
@@ -82,6 +85,37 @@ function GET_Folder(id) {
     var deferred = Q.defer();
 
 
+
+    return deferred.promise;
+}
+
+function MOVE_Folder(toID, fromID, userID) {
+    var deferred = Q.defer();
+
+    Folder.findOne({ _id : fromID, user : userID }, function(err, fromFolder) {
+        if (err) deferred.reject(err)
+
+        Folder.findOne({ _id : toID, user : userID }, function(err, toFolder) {
+            if (err) deferred.reject(err)
+
+            Folder.find({ parents : { $in : [fromFolder._id] } }).lean().exec(function(err, childs) {
+                if (err) deferred.reject(err)
+
+                if(fromFolder.parent =! null) {
+                    childs.forEach(x => x.parents = _.differenceWith(x.parents, fromFolder.parents,  _.isEqual))
+                }
+                childs.forEach(x => {
+                    x.parents = _.concat(x.parents, toFolder.parents)
+                    x.path = folderPathUpdate(fromFolder, toFolder, x.path)
+                })
+                fromFolder.parent = toFolder._id
+                console.log('------------------------------------')
+                //console.log(childs)
+                console.log('------------------------------------')
+                deferred.resolve()
+            })
+        })
+    })
 
     return deferred.promise;
 }

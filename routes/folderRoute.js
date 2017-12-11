@@ -9,6 +9,7 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 
 router.post('/', requireAuth, POST_Folder);
 router.get('/:id', requireAuth, GET_Folder);
+router.put('/move/:id', requireAuth, MOVE_Folder);
 router.put('/rename/:id', requireAuth, RENAME_Folder);
 router.delete('/:id', requireAuth, DELETE_Folder);
 
@@ -28,6 +29,16 @@ function GET_Folder(req, res, next) {
     FolderControllers.GET_Folder(req.params.id)
         .then(function (folder) {
             res.send(folder)
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
+function MOVE_Folder(req, res, next) {
+    FolderControllers.MOVE_Folder(req.body.folder, req.params.id, req.user._id)
+        .then(function () {
+            res.sendStatus(200)
         })
         .catch(function(err) {
             res.send(err)
