@@ -95,51 +95,126 @@ function MOVE_Folder(toID, fromID, userID) {
     Folder.findOne({ _id : fromID, user : userID }, function(err, fromFolder) {
         if (err) deferred.reject(err)
 
-        Folder.findOne({ _id : toID, user : userID }, function(err, toFolder) {
+        Folder.find({ parents : fromFolder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
-            Folder.find({ parents : fromFolder._id }).lean().exec(function(err, childs) {
-                if (err) deferred.reject(err)
+            let racinePath = '../folders/' + sha3_256(fromFolder.user.toString())
+            let oldPath = fromFolder.path
 
-                let racinePath = '../folders/' + sha3_256(toFolder.user.toString())
-                let oldPath = fromFolder.path
+            if(childs.length) {
 
                 if(fromFolder.parent =! null) {
                     childs.forEach(x => x.parents = _.differenceWith(x.parents, fromFolder.parents,  _.isEqual))
                 }
 
-                childs.forEach(x => {
-                    x.parents = _.union(x.parents, toFolder.parents)
-                    x.parents.push(toFolder._id)
-                    x.path = folderUpdateMovePath(fromFolder, toFolder, x.path)
-                })
+                if(toID != 'null') {
 
-                fromFolder.parent = toFolder._id
-                fromFolder.parents = toFolder.parents
-                fromFolder.parents.push(toFolder._id)
-                fromFolder.path = toFolder.path + '/' + fromFolder.name
+                    Folder.findOne({ _id : toID, user : userID }, function(err, toFolder) {
+                        if (err) deferred.reject(err)
 
-                let arrayRes = []
-                let documents = childs
-                documents.push(fromFolder)
+                        childs.forEach(x => {
+                            x.parents = _.union(x.parents, toFolder.parents)
+                            x.parents.push(toFolder._id)
+                            x.path = folderUpdateMovePath(fromFolder, toFolder, x.path)
+                        })
 
-                for(let i = 0; i < documents.length; i++)
-                {
-                    arrayRes.push(folderMultiUpdate(documents[i]))
+                        fromFolder.parent = toFolder._id
+                        fromFolder.parents = toFolder.parents
+                        fromFolder.parents.push(toFolder._id)
+                        fromFolder.path = toFolder.path + '/' + fromFolder.name
+
+                        let arrayRes = []
+                        let documents = childs
+                        documents.push(fromFolder)
+
+                        for(let i = 0; i < documents.length; i++)
+                        {
+                            arrayRes.push(folderMultiUpdate(documents[i]))
+                        }
+
+                        Promise.all(arrayRes)
+                            .then(res => {
+
+                                mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
+                                    if (err) deferred.reject(err)
+
+                                    deferred.resolve()
+                                })
+
+                            })
+                            .catch(err => { deferred.reject(err) })
+                    })
+
+                } else {
+
+                    childs.forEach(x => x.path = folderUpdateMovePath(fromFolder, null, x.path))
+                    fromFolder.parent = null
+                    fromFolder.parents = []
+                    fromFolder.path = '/' + fromFolder.name
+
+                    let arrayRes = []
+                    let documents = childs
+                    documents.push(fromFolder)
+
+                    for(let i = 0; i < documents.length; i++)
+                    {
+                        arrayRes.push(folderMultiUpdate(documents[i]))
+                    }
+
+                    Promise.all(arrayRes)
+                        .then(res => {
+
+                            mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
+                                if (err) deferred.reject(err)
+
+                                deferred.resolve()
+                            })
+
+                        })
+                        .catch(err => { deferred.reject(err) })
                 }
 
-                Promise.all(arrayRes)
-                    .then(res => {
+            } else {
+
+                if(toID != 'null') {
+
+                    Folder.findOne({ _id : toID, user : userID }, function(err, toFolder) {
+                        if (err) deferred.reject(err)
+
+                        fromFolder.parent = toFolder._id
+                        fromFolder.parents = toFolder.parents
+                        fromFolder.parents.push(toFolder._id)
+                        fromFolder.path = toFolder.path + '/' + fromFolder.name
+
+                        Folder.update({ _id : fromFolder._id }, fromFolder, function(err, folder) {
+                            if (err) deferred.reject(err)
+
+                            mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
+                                if (err) deferred.reject(err)
+
+                                deferred.resolve()
+                            })
+                        })
+                    })
+
+                } else {
+
+                    fromFolder.parent = null
+                    fromFolder.parents = []
+                    fromFolder.path = '/' + fromFolder.name
+
+                    Folder.update({ _id : fromFolder._id }, fromFolder, function(err, folder) {
+                        if (err) deferred.reject(err)
 
                         mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
                             if (err) deferred.reject(err)
 
                             deferred.resolve()
                         })
-
                     })
-                    .catch(err => { deferred.reject(err) })
-            })
+
+                }
+            }
         })
     })
 
