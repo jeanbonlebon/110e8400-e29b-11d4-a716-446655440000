@@ -6,7 +6,8 @@ const express = require('express'),
 
 const UserRoute = require('./routes/userRoute.js'),
       AuthRoute = require('./routes/authRoute.js'),
-      FolderRoute = require('./routes/folderRoute.js');
+      FolderRoute = require('./routes/folderRoute.js'),
+      FileRoute = require('./routes/fileRoute.js');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database);
@@ -30,5 +31,6 @@ app.use(passport.session());
 app.use('/api/auth', AuthRoute);
 app.use('/api/user', UserRoute);
 app.use('/api/folder', FolderRoute);
+app.use('/api/file', FileRoute);
 
 app.listen(3000);
