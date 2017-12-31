@@ -2,6 +2,8 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
       config = require('./config/main'),
+      multer  = require('multer'),
+      upload = multer(),
       passport = require('passport');
 
 const UserRoute = require('./routes/userRoute.js'),
@@ -21,6 +23,12 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
+
+app.use(multer({ dest: './tmp/',
+   rename: function (fieldname, filename) {
+     return filename;
+   },
+}).any());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

@@ -1,13 +1,15 @@
 const express = require('express'),
       router = express.Router(),
       passport = require('passport'),
+      multer  = require('multer'),
+      upload = multer(),
       passportService = require('../config/passport'),
       AuthControllers = require('../controllers/authControllers.js'),
       FileControllers = require('../controllers/fileControllers.js')
 
 const requireAuth = passport.authenticate('jwt', { session: false });
 
-router.post('/', requireAuth, POST_File);
+router.post('/', requireAuth, upload.single('file'), POST_File);
 
 module.exports = router;
 

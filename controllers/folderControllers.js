@@ -23,7 +23,7 @@ controller.DELETE_Folder = DELETE_Folder;
 module.exports = controller;
 
 function POST_Folder(req, _id) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
     User.findById(_id, function(err, user) {
         if (err) deferred.reject(err)
@@ -42,43 +42,34 @@ function POST_Folder(req, _id) {
                 if (err) deferred.reject(err)
 
                 folder.parent = parent._id
-                folder.path = parent.path + '/' + folder.name;
+                folder.path = parent.path + '/' + folder.name
 
-                mkdirp(path + folder.path, function (err) {
-                    if (err) deferred.reject(err)
-
-                    if(folder.parents != null) {
-                        folder.parents = parent.parents
-                    }
-                    folder.parents.push(parent._id)
-
-                    folder.save(function(err, folder) {
-                        if (err) deferred.reject(err)
-
-                        deferred.resolve();
-                    });
-                });
-            });
-
-        } else {
-
-            folder.path = '/' + folder.name;
-
-            mkdirp(path + '/' + folder.name, function (err) {
-                if (err) deferred.reject(err)
+                if(folder.parents != null) {
+                    folder.parents = parent.parents
+                }
+                folder.parents.push(parent._id)
 
                 folder.save(function(err, folder) {
                     if (err) deferred.reject(err)
 
-                    deferred.resolve();
-                });
-            });
+                    deferred.resolve()
+                })
+            })
 
+        } else {
+
+            folder.path = '/' + folder.name
+
+            folder.save(function(err, folder) {
+                if (err) deferred.reject(err)
+
+                deferred.resolve()
+            });
         }
 
     });
 
-    return deferred.promise;
+    return deferred.promise
 }
 
 function GET_Folder(id) {
@@ -90,7 +81,7 @@ function GET_Folder(id) {
 }
 
 function MOVE_Folder(toID, fromID, userID) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
     Folder.findOne({ _id : fromID, user : userID }, function(err, fromFolder) {
         if (err) deferred.reject(err)
@@ -133,16 +124,8 @@ function MOVE_Folder(toID, fromID, userID) {
                         }
 
                         Promise.all(arrayRes)
-                            .then(res => {
-
-                                mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
-                                    if (err) deferred.reject(err)
-
-                                    deferred.resolve()
-                                })
-
-                            })
-                            .catch(err => { deferred.reject(err) })
+                            .then(res => deferred.resolve())
+                            .catch(err => deferred.reject(err))
                     })
 
                 } else {
@@ -162,16 +145,8 @@ function MOVE_Folder(toID, fromID, userID) {
                     }
 
                     Promise.all(arrayRes)
-                        .then(res => {
-
-                            mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
-                                if (err) deferred.reject(err)
-
-                                deferred.resolve()
-                            })
-
-                        })
-                        .catch(err => { deferred.reject(err) })
+                        .then(res => deferred.resolve())
+                        .catch(err => deferred.reject(err))
                 }
 
             } else {
@@ -189,11 +164,7 @@ function MOVE_Folder(toID, fromID, userID) {
                         Folder.update({ _id : fromFolder._id }, fromFolder, function(err, folder) {
                             if (err) deferred.reject(err)
 
-                            mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
-                                if (err) deferred.reject(err)
-
-                                deferred.resolve()
-                            })
+                            deferred.resolve()
                         })
                     })
 
@@ -206,23 +177,18 @@ function MOVE_Folder(toID, fromID, userID) {
                     Folder.update({ _id : fromFolder._id }, fromFolder, function(err, folder) {
                         if (err) deferred.reject(err)
 
-                        mv(racinePath + oldPath, racinePath + fromFolder.path, function(err) {
-                            if (err) deferred.reject(err)
-
-                            deferred.resolve()
-                        })
+                        deferred.resolve()
                     })
-
                 }
             }
         })
     })
 
-    return deferred.promise;
+    return deferred.promise
 }
 
 function RENAME_Folder(newName, id, userID) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
     Folder.findOne({ _id : id, user : userID }, function(err, folder) {
         if (err) deferred.reject(err)
@@ -257,24 +223,16 @@ function RENAME_Folder(newName, id, userID) {
             }
 
             Promise.all(arrayRes)
-                .then(res => {
-
-                    mv(racinePath + oldPath, racinePath + newPath, function(err) {
-                        if (err) deferred.reject(err)
-
-                        deferred.resolve()
-                    })
-
-                })
-                .catch(err => { deferred.reject(err) })
+                .then(res => deferred.resolve())
+                .catch(err => deferred.reject(err))
         });
     });
 
-    return deferred.promise;
+    return deferred.promise
 }
 
 function DELETE_Folder(id, userID) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
     Folder.findOne({ _id : id, user : userID }, function(err, folder) {
         if (err) deferred.reject(err)
@@ -282,39 +240,31 @@ function DELETE_Folder(id, userID) {
         Folder.find({ parents : folder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
-            let path = '../folders/' + sha3_256(folder.user.toString()) + folder.path;
+            let path = '../folders/' + sha3_256(folder.user.toString()) + folder.path
 
             if(childs.length) {
 
-                let foldersIds = [];
+                let foldersIds = []
                 childs.forEach( x => foldersIds.push(x._id) )
                 foldersIds.push(folder._id)
 
                 Folder.remove({ _id : { $in : foldersIds } }, function(err) {
                     if (err) deferred.reject(err)
 
-                    rmdir(path, function (err) {
-                        if (err) deferred.reject(err)
-
-                        deferred.resolve()
-                    });
-                });
+                    deferred.resolve()
+                })
 
             } else {
 
                 Folder.remove({ _id : folder._id }, function(err) {
                     if (err) deferred.reject(err)
 
-                    rmdir(path, function (err) {
-                        if (err) deferred.reject(err)
-
-                        deferred.resolve()
-                    });
-                });
+                    deferred.resolve()
+                })
 
             }
         })
     });
 
-    return deferred.promise;
+    return deferred.promise
 }

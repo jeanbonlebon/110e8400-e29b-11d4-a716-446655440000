@@ -18,8 +18,9 @@ var FileSchema = new Schema ({
       type: Schema.Types.ObjectId,
       ref: 'Folder',
     },
-    infos: {
-      type: Object,
+    size: {
+      type: Number,
+      required: true
     },
     },
     {
