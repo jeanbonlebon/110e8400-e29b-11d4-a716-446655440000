@@ -22,6 +22,8 @@
     "mv": "^2.1.1",
     "node-virustotal": "^2.4.2",
     "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
+    "passport-facebook-token": "^3.3.0",
     "passport-jwt": "^3.0.1",
     "passport-local": "^1.0.0",
     "q": "^1.5.1",
