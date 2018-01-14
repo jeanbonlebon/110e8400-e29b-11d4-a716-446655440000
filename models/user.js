@@ -17,6 +17,10 @@ var UserSchema = new Schema ({
       firstName: { type: String },
       lastName: { type: String }
     },
+    space_available: {
+      type: Number,
+      required: true
+    },
     },
     {
       timestamps: true

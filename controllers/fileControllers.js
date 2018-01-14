@@ -8,6 +8,7 @@ const Q = require('q'),
       File = require('../models/file'),
       Folder = require('../models/folder');
 
+const checkMalware = require('../helpers/checkMalware');
 
 var controller = {};
 
@@ -21,23 +22,40 @@ module.exports = controller;
 function POST_File(body, dataFile, _id) {
     var deferred = Q.defer()
 
-    let file = new File()
-    file.name = dataFile[0].originalname
-    file.size = dataFile[0].size
-    file.user = _id
-
-    let extension = dataFile[0].originalname.split(".")
-    let pathTmp = './tmp/' + dataFile[0].filename
-    let path = '../folders/' + sha3_256(_id.toString()) + '/' + file._id.toString() + '.' + extension[1]
-
-    file.save(function(err) {
+    User.findById(_id, function(err, user) {
         if (err) deferred.reject(err)
 
-        mv(pathTmp, path, function(err) {
-            if (err) deferred.reject(err)
+        let file = new File()
+        file.name = dataFile[0].originalname
+        file.size = dataFile[0].size
+        file.user = user._id
 
-            deferred.resolve()
+        user.space_available = user.space_available - file.size
+
+        let extension = dataFile[0].originalname.split(".")
+        let pathTmp = './tmp/' + dataFile[0].filename
+        let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' + extension[1]
+
+        checkMalware(file.name, pathTmp)
+        .then(res => {
+
+            file.save(function(err) {
+                if (err) deferred.reject(err)
+
+                mv(pathTmp, path, function(err) {
+                    if (err) deferred.reject(err)
+
+                    user.save(function(err) {
+                        if (err) deferred.reject(err)
+
+                        deferred.resolve()
+                    })
+                })
+            })
+
         })
+        .catch(err => deferred.reject(err))
+
     })
 
     return deferred.promise

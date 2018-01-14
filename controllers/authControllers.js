@@ -45,7 +45,8 @@ function register(req) {
         let user = new User({
           email: email,
           password: password,
-          profile: { firstName: firstName, lastName: lastName }
+          profile: { firstName: firstName, lastName: lastName },
+          space_available: 4026531840
         });
 
         user.save(function(err, user) {

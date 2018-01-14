@@ -25,9 +25,9 @@ app.use(function(req, res, next) {
 });
 
 app.use(multer({ dest: './tmp/',
-   rename: function (fieldname, filename) {
-     return filename;
-   },
+    rename: function (fieldname, filename) {
+        return filename;
+    },
 }).any());
 
 app.use(bodyParser.urlencoded({ extended: true }));
