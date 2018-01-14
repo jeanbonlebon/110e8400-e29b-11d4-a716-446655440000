@@ -6,10 +6,11 @@ const express = require('express'),
 
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireLogin = passport.authenticate('local', { session: false });
-
+const requireFacebook = passport.authenticate('facebook-token', { session: false });
 
 router.post('/login', requireLogin, login);
 router.post('/register', register);
+router.post('/facebook', requireFacebook, login);
 
 module.exports = router;
 

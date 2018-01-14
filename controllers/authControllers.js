@@ -15,20 +15,20 @@ controller.register = register;
 module.exports = controller;
 
 function login(req) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
-    let userInfo = setUserInfo(req.user);
+    let userInfo = setUserInfo(req.user)
 
     deferred.resolve({
         token: 'JWT ' + generateToken(userInfo),
         user: userInfo
     });
 
-    return deferred.promise;
+    return deferred.promise
 }
 
 function register(req) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
     const email = req.email;
     const firstName = req.firstName;
@@ -53,27 +53,24 @@ function register(req) {
 
             let userInfo = setUserInfo(user);
 
-
             mkdirp('../folders/' + sha3_256(user._id.toString()), function (err) {
                 if (err) deferred.reject(err)
 
                 deferred.resolve({
                   token: 'JWT ' + generateToken(userInfo),
                   user: userInfo
-                });
+                })
+            })
+        })
+    })
 
-            });
-        });
-
-    });
-
-    return deferred.promise;
+    return deferred.promise
 }
 
 
 function generateToken(user) {
     return jwt.sign(user, config.secret, {
-        expiresIn: 10080 // in seconds
+        expiresIn: 10080 // sec
     });
 }
 

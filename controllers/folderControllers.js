@@ -16,6 +16,7 @@ var controller = {};
 
 controller.POST_Folder = POST_Folder;
 controller.GET_Folder = GET_Folder;
+controller.GET_ChildsFolder = GET_ChildsFolder;
 controller.MOVE_Folder = MOVE_Folder;
 controller.RENAME_Folder = RENAME_Folder;
 controller.DELETE_Folder = DELETE_Folder;
@@ -34,7 +35,7 @@ function POST_Folder(req, _id) {
             parent: null,
         });
 
-        let path = '../folders/' + sha3_256(user._id.toString());
+        let path = '../folders/' + sha3_256(user._id.toString())
 
         if(req.parent != 'null') {
 
@@ -64,18 +65,34 @@ function POST_Folder(req, _id) {
                 if (err) deferred.reject(err)
 
                 deferred.resolve()
-            });
+            })
         }
 
-    });
+    })
 
     return deferred.promise
 }
 
-function GET_Folder(id) {
+function GET_Folder(folderID, userID) {
     var deferred = Q.defer();
 
+    Folder.findOne({ _id: folderID, user : userID }, function(err, folder) {
+        if (err) deferred.reject(err)
 
+        deferred.resolve(folder)
+    })
+
+    return deferred.promise;
+}
+
+function GET_ChildsFolder(folderID, userID) {
+    var deferred = Q.defer();
+    folderID == 'null' ? folderID = null : null
+    Folder.find({ parent: folderID, user : userID }, function(err, folders) {
+        if (err) deferred.reject(err)
+
+        deferred.resolve(folders)
+    })
 
     return deferred.promise;
 }
@@ -193,8 +210,6 @@ function RENAME_Folder(newName, id, userID) {
     Folder.findOne({ _id : id, user : userID }, function(err, folder) {
         if (err) deferred.reject(err)
 
-        let racinePath = '../folders/' + sha3_256(folder.user.toString())
-
         Folder.find({ parents : folder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
@@ -225,6 +240,7 @@ function RENAME_Folder(newName, id, userID) {
             Promise.all(arrayRes)
                 .then(res => deferred.resolve())
                 .catch(err => deferred.reject(err))
+
         });
     });
 

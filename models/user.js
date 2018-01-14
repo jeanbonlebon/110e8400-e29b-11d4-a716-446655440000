@@ -10,12 +10,15 @@ var UserSchema = new Schema ({
       required: true
     },
     password: {
-      type: String,
-      required: true
+      type: String
     },
     profile: {
       firstName: { type: String },
       lastName: { type: String }
+    },
+    facebook: {
+      id: String,
+      token: String,
     },
     },
     {
@@ -43,10 +46,36 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if (err) { return cb(err); }
+        if (err) { return cb(err) }
 
-        cb(null, isMatch);
+        cb(null, isMatch)
     });
+}
+
+UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, cb) {
+    var that = this;
+    return this.findOne({ 'facebook.id': profile.id }, function(err, user) {
+        if (!user) {
+            var newUser = new that({
+                email: profile.emails[0].value,
+                profile: {
+                    firstName: profile.name.givenName,
+                    lastName: profile.name.familyName
+                },
+                facebook: {
+                    id: profile.id,
+                    token: accessToken
+                }
+            })
+            newUser.save(function(error, savedUser) {
+                if (error)  console.log(error)
+
+                return cb(error, savedUser)
+            })
+        } else {
+            return cb(err, user)
+        }
+    })
 }
 
 module.exports = mongoose.model('User', UserSchema);
