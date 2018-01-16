@@ -28,6 +28,7 @@ function POST_File(body, dataFile, _id) {
         let file = new File()
         file.name = dataFile[0].originalname
         file.size = dataFile[0].size
+        file.type = dataFile[0].mimetype
         file.user = user._id
 
         user.space_available = user.space_available - file.size
@@ -36,7 +37,7 @@ function POST_File(body, dataFile, _id) {
         let pathTmp = './tmp/' + dataFile[0].filename
         let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' + extension[1]
 
-        checkMalware(file.name, pathTmp)
+        checkMalware(file.name, file.type, pathTmp)
         .then(res => {
 
             file.save(function(err) {
