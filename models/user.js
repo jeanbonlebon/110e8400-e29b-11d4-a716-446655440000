@@ -1,5 +1,7 @@
 const mongoose = require('mongoose'),
       Schema = mongoose.Schema,
+      sha3_256 = require('js-sha3').sha3_256,
+      mkdirp = require('mkdirp'),
       bcrypt = require('bcrypt-nodejs');
 
 var UserSchema = new Schema ({
@@ -69,12 +71,17 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
                 facebook: {
                     id: profile.id,
                     token: accessToken
-                }
+                },
+                space_available: 4026531840
             })
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
 
-                return cb(error, savedUser)
+                mkdirp('../folders/' + sha3_256(savedUser._id.toString()), function (err) {
+                    if (err) console.log(err)
+
+                    return cb(error, savedUser)
+                })
             })
         } else {
             return cb(err, user)

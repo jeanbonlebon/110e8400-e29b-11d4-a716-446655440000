@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "API for SuFile Project SUPINFO MSC",
   "main": "serveur.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jeanbonlebon/110e8400-e29b-11d4-a716-446655440000.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,7 +26,6 @@
     "mv": "^2.1.1",
     "node-virustotal": "^2.4.2",
     "passport": "^0.4.0",
-    "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",
     "passport-jwt": "^3.0.1",
     "passport-local": "^1.0.0",
