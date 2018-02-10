@@ -14,9 +14,9 @@ module.exports = router;
 
 
 function GET_Users(req, res, next) {
-    UserControllers.GET_Users()
-        .then(function (users) {
-            res.send(users)
+    UserControllers.GET_Users(req.user._id)
+        .then(function (user) {
+            res.send(user)
         })
         .catch(function(err) {
             res.send(err)

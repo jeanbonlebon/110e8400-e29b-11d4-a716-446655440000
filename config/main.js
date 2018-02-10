@@ -6,5 +6,9 @@ module.exports = {
   'fbConfig': {
     'appID' : '1487784628006176',
     'appSecret' : 'bcd0af926a4722fa8f2beb90b54798f4'
+  },
+  'glConfig' : {
+    'appID' : '264544487772-pjnoseir23t4cfod8bu6bc24d020ra7q.apps.googleusercontent.com',
+    'appSecret' : 'FrPHEbr9EnrhS2AwUn_Dx1HF'
   }
 }

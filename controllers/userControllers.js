@@ -9,13 +9,13 @@ controller.PUT_Users = PUT_Users;
 
 module.exports = controller;
 
-function GET_Users() {
+function GET_Users(_id) {
     var deferred = Q.defer();
 
-    User.find(function(err, users) {
+    User.findOne(_id, function(err, user) {
         if (err) deferred.reject(err)
 
-        deferred.resolve(users)
+        deferred.resolve(user)
     });
 
     return deferred.promise;

@@ -7,10 +7,12 @@ const express = require('express'),
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireLogin = passport.authenticate('local', { session: false });
 const requireFacebook = passport.authenticate('facebook-token', { session: false });
+const requireGoogle = passport.authenticate('google-token', { session: false });
 
 router.post('/login', requireLogin, login);
 router.post('/register', register);
 router.post('/facebook', requireFacebook, login);
+router.post('/google', requireGoogle, login);
 
 module.exports = router;
 

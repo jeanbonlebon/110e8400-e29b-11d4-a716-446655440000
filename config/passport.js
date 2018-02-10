@@ -3,6 +3,7 @@ const passport = require('passport'),
       sha3_256 = require('js-sha3').sha3_256,
       mkdirp = require('mkdirp'),
       config = require('./main'),
+      GoogleTokenStrategy = require('passport-google-token').Strategy,
       FacebookTokenStrategy = require('passport-facebook-token'),
       JwtStrategy = require('passport-jwt').Strategy,
       ExtractJwt = require('passport-jwt').ExtractJwt,
@@ -34,6 +35,17 @@ const facebookLogin = new FacebookTokenStrategy(facebookOptions, function(access
     })
 })
 
+const googleOptions = {
+    clientID        : config.glConfig.appID,
+    clientSecret    : config.glConfig.appSecret
+}
+const googleLogin = new GoogleTokenStrategy(googleOptions, function(accessToken, refreshToken, profile, done) {
+    console.log(accessToken, refreshToken, profile)
+    User.upsertGlUser(accessToken, refreshToken, profile, function(err, user) {
+        return done(err, user);
+    })
+})
+
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
     secretOrKey: config.secret
@@ -47,6 +59,7 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
     })
 })
 
+passport.use(googleLogin);
 passport.use(facebookLogin);
 passport.use(jwtLogin);
 passport.use(localLogin);

@@ -26,6 +26,10 @@ var UserSchema = new Schema ({
       id: String,
       token: String,
     },
+    google: {
+      id: String,
+      token: String,
+    },
     },
     {
       timestamps: true
@@ -69,6 +73,37 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
                     lastName: profile.name.familyName
                 },
                 facebook: {
+                    id: profile.id,
+                    token: accessToken
+                },
+                space_available: 4026531840
+            })
+            newUser.save(function(error, savedUser) {
+                if (error)  console.log(error)
+
+                mkdirp('../folders/' + sha3_256(savedUser._id.toString()), function (err) {
+                    if (err) console.log(err)
+
+                    return cb(error, savedUser)
+                })
+            })
+        } else {
+            return cb(err, user)
+        }
+    })
+}
+
+UserSchema.statics.upsertGlUser = function(accessToken, refreshToken, profile, cb) {
+    var that = this;
+    return this.findOne({ 'google.id': profile.id }, function(err, user) {
+        if (!user) {
+            var newUser = new that({
+                email: profile.emails[0].value,
+                profile: {
+                    firstName: profile.name.givenName,
+                    lastName: profile.name.familyName
+                },
+                google: {
                     id: profile.id,
                     token: accessToken
                 },
