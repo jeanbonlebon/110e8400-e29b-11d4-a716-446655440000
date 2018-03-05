@@ -35,26 +35,6 @@ function GET_File(folder, _id) {
     return deferred.promise
 }
 
-function POST_File(folder_id, dataFile, _id) {
-    var deferred = Q.defer()
-
-    if(folder == 'null') {
-        File.find({folder : null, user : _id}, function(err, folders) {
-            if (err) deferred.reject(err)
-
-            deferred.resolve(folders)
-        })
-    } else {
-        File.find({folder : folder, user : _id}, function(err, folders) {
-            if (err) deferred.reject(err)
-
-            deferred.resolve(folders)
-        })
-    }
-
-    return deferred.promise
-}
-
 function POST_File(folder, dataFile, _id) {
     var deferred = Q.defer()
     console.log(folder, dataFile, _id)
@@ -123,12 +103,6 @@ function DELETE_File(file_id, _id) {
              })
         })
     })
-
-    return deferred.promise
-}
-
-function DELETE_File(folder_id, _id) {
-    var deferred = Q.defer()
 
     return deferred.promise
 }
