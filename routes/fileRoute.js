@@ -17,8 +17,8 @@ module.exports = router;
 
 function GET_File(req, res, next) {
     FileControllers.GET_File(req.params.id, req.user._id)
-        .then(function (folders) {
-            res.send(folders)
+        .then(function (files) {
+            res.send(files)
         })
         .catch(function(err) {
             res.send(err)
@@ -28,7 +28,7 @@ function GET_File(req, res, next) {
 function POST_File(req, res, next) {
     FileControllers.POST_File(req.params.id, req.files, req.user._id)
         .then(function () {
-            res.send({status : 'OK', statusCode : 200})
+            res.send({status : 'OK', statusCode : 200 })
         })
         .catch(function(err) {
             res.send(err)
@@ -38,7 +38,7 @@ function POST_File(req, res, next) {
 function DELETE_File(req, res, next) {
     FileControllers.DELETE_File(req.params.id, req.user._id)
         .then(function () {
-            res.send({status : 'OK', statusCode : 200})
+            res.send({status : 'OK', statusCode : 200 })
         })
         .catch(function(err) {
             res.send(err)
