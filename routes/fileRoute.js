@@ -9,14 +9,36 @@ const express = require('express'),
 
 const requireAuth = passport.authenticate('jwt', { session: false });
 
-router.post('/', requireAuth, upload.single('file'), POST_File);
+router.get('/:id', requireAuth, GET_File);
+router.post('/:id', requireAuth, upload.single('file'), POST_File);
+router.delete('/:id', requireAuth, DELETE_File);
 
 module.exports = router;
 
+function GET_File(req, res, next) {
+    FileControllers.GET_File(req.params.id, req.user._id)
+        .then(function (folders) {
+            res.send(folders)
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
 function POST_File(req, res, next) {
-    FileControllers.POST_File(req.body, req.files, req.user._id)
+    FileControllers.POST_File(req.params.id, req.files, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200})
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
+function DELETE_File(req, res, next) {
+    FileControllers.DELETE_File(req.params.id, req.user._id)
+        .then(function () {
+            res.send({status : 'OK', statusCode : 200})
         })
         .catch(function(err) {
             res.send(err)

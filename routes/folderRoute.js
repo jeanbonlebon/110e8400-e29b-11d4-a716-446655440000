@@ -19,7 +19,7 @@ module.exports = router;
 function POST_Folder(req, res, next) {
     FolderControllers.POST_Folder(req.body, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200})
         })
         .catch(function(err) {
             res.send(err)
@@ -49,7 +49,7 @@ function GET_ChildsFolder(req, res, next) {
 function MOVE_Folder(req, res, next) {
     FolderControllers.MOVE_Folder(req.body.folder, req.params.id, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200})
         })
         .catch(function(err) {
             res.send(err)
@@ -59,7 +59,7 @@ function MOVE_Folder(req, res, next) {
 function RENAME_Folder(req, res, next) {
     FolderControllers.RENAME_Folder(req.body.name, req.params.id, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200})
         })
         .catch(function(err) {
             res.send(err)
@@ -69,7 +69,7 @@ function RENAME_Folder(req, res, next) {
 function DELETE_Folder(req, res, next) {
     FolderControllers.DELETE_Folder(req.params.id, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200})
         })
         .catch(function(err) {
             res.send(err)
