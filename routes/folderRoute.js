@@ -10,6 +10,7 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 router.post('/', requireAuth, POST_Folder);
 router.get('/:id', requireAuth, GET_Folder);
 router.get('/childs/:id', requireAuth, GET_ChildsFolder);
+router.get('/download/:id', requireAuth, DOWNLOAD_Folder);
 router.put('/move/:id', requireAuth, MOVE_Folder);
 router.put('/rename/:id', requireAuth, RENAME_Folder);
 router.delete('/:id', requireAuth, DELETE_Folder);
@@ -19,7 +20,7 @@ module.exports = router;
 function POST_Folder(req, res, next) {
     FolderControllers.POST_Folder(req.body, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200 })
         })
         .catch(function(err) {
             res.send(err)
@@ -49,7 +50,7 @@ function GET_ChildsFolder(req, res, next) {
 function MOVE_Folder(req, res, next) {
     FolderControllers.MOVE_Folder(req.body.folder, req.params.id, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200 })
         })
         .catch(function(err) {
             res.send(err)
@@ -59,7 +60,7 @@ function MOVE_Folder(req, res, next) {
 function RENAME_Folder(req, res, next) {
     FolderControllers.RENAME_Folder(req.body.name, req.params.id, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200 })
         })
         .catch(function(err) {
             res.send(err)
@@ -69,7 +70,17 @@ function RENAME_Folder(req, res, next) {
 function DELETE_Folder(req, res, next) {
     FolderControllers.DELETE_Folder(req.params.id, req.user._id)
         .then(function () {
-            res.sendStatus(200)
+            res.send({status : 'OK', statusCode : 200 })
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
+function DOWNLOAD_Folder(req, res, next) {
+    FolderControllers.DOWNLOAD_Folder(req.params.id, req.user._id)
+        .then(function (zip) {
+            res.send(zip)
         })
         .catch(function(err) {
             res.send(err)
