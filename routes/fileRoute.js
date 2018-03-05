@@ -11,6 +11,8 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 
 router.get('/:id', requireAuth, GET_File);
 router.post('/:id', requireAuth, upload.single('file'), POST_File);
+router.put('/move/:id', requireAuth, MOVE_File);
+router.put('/rename/:id', requireAuth, RENAME_File);
 router.delete('/:id', requireAuth, DELETE_File);
 
 module.exports = router;
@@ -27,6 +29,26 @@ function GET_File(req, res, next) {
 
 function POST_File(req, res, next) {
     FileControllers.POST_File(req.params.id, req.files, req.user._id)
+        .then(function () {
+            res.send({status : 'OK', statusCode : 200 })
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
+function MOVE_File(req, res, next) {
+    FileControllers.MOVE_File(req.body.folder, req.params.id, req.user._id)
+        .then(function () {
+            res.send({status : 'OK', statusCode : 200 })
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
+function RENAME_File(req, res, next) {
+    FileControllers.RENAME_File(req.body.name, req.params.id, req.user._id)
         .then(function () {
             res.send({status : 'OK', statusCode : 200 })
         })

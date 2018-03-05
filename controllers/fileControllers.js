@@ -17,6 +17,8 @@ var controller = {};
 
 controller.GET_File = GET_File;
 controller.POST_File = POST_File;
+controller.MOVE_File = MOVE_File;
+controller.RENAME_File = RENAME_File;
 controller.DELETE_File = DELETE_File;
 
 module.exports = controller;
@@ -26,7 +28,7 @@ function GET_File(folder, _id) {
 
     folder == 'null' ? folder = null : null
 
-    File.find({ folder : null, user : _id }, function(err, files) {
+    File.find({ folder : folder, user : _id }, function(err, files) {
         if (err) deferred.reject(err)
 
         deferred.resolve(files)
@@ -46,7 +48,7 @@ function POST_File(folder, dataFile, _id) {
         file.size = dataFile[0].size
         file.type = dataFile[0].mimetype
         file.user = user._id
-        folder_id == 'null' ? file.folder = null : file.folder = folder_id
+        folder == 'null' ? file.folder = null : file.folder = folder
 
         user.space_available = user.space_available - file.size
 
@@ -54,10 +56,10 @@ function POST_File(folder, dataFile, _id) {
         let pathTmp = './tmp/' + dataFile[0].filename
         let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' + extension[1]
 
-
+/*
         checkMalware(file.name, file.type, pathTmp)
         .then(res => {
-
+*/
             file.save(function(err) {
                 if (err) deferred.reject(err)
 
@@ -71,10 +73,50 @@ function POST_File(folder, dataFile, _id) {
                     })
                 })
             })
-
+/*
         })
         .catch(err => deferred.reject(err))
+*/
+    })
 
+    return deferred.promise
+}
+
+function MOVE_File(toFolder, file_id, userID) {
+    var deferred = Q.defer()
+
+    toFolder == 'null' ? toFolder = null : null
+
+    File.findById(file_id, function(err, file) {
+        if (err) deferred.reject(err)
+        if (!file || file.user != userID) deferred.reject({status: 'Not Found', statusCode: 400})
+
+        file.folder = toFolder
+
+        file.save(function (err) {
+            if (err) deferred.reject(err)
+
+            deferred.resolve()
+        })
+    })
+
+    return deferred.promise
+}
+
+function RENAME_File(newName, file_id, userID) {
+    var deferred = Q.defer()
+
+    File.findById(file_id, function(err, file) {
+        if (err) deferred.reject(err)
+        if (!file || file.user != userID) deferred.reject({status: 'Not Found', statusCode: 400})
+
+        file.name = newName
+
+        file.save(function (err) {
+            if (err) deferred.reject(err)
+
+            deferred.resolve()
+        })
     })
 
     return deferred.promise
