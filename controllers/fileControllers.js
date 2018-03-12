@@ -15,6 +15,7 @@ var controller = {};
 //ClamScan -> Vérification des malware
 //30GO = 32212254720 octets
 
+controller.GET_Files = GET_Files;
 controller.GET_File = GET_File;
 controller.POST_File = POST_File;
 controller.MOVE_File = MOVE_File;
@@ -23,7 +24,7 @@ controller.DELETE_File = DELETE_File;
 
 module.exports = controller;
 
-function GET_File(folder, _id) {
+function GET_Files(folder, _id) {
     var deferred = Q.defer()
 
     folder == 'null' ? folder = null : null
@@ -32,6 +33,19 @@ function GET_File(folder, _id) {
         if (err) deferred.reject(err)
 
         deferred.resolve(files)
+    })
+
+    return deferred.promise
+}
+
+function GET_File(file_id, _id) {
+    var deferred = Q.defer()
+
+    File.findOne({ _id : file_id, user : _id }, function(err, file) {
+        if (err) deferred.reject(err)
+        if (!file) deferred.reject({status: 'Not Found', statusCode: 400})
+
+        deferred.resolve(file)
     })
 
     return deferred.promise
@@ -52,9 +66,9 @@ function POST_File(folder, dataFile, _id) {
 
         user.space_available = user.space_available - file.size
 
-        let extension = file.type.split("/")
+        let extension = file.name.split(".")
         let pathTmp = './tmp/' + dataFile[0].filename
-        let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' + extension[1]
+        let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
 
 /*
         checkMalware(file.name, file.type, pathTmp)
@@ -131,8 +145,8 @@ function DELETE_File(file_id, _id) {
         File.findById(file_id, function(err, file) {
             if (err) deferred.reject(err)
 
-            let extension = file.type.split("/")
-            let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' + extension[1]
+            let extension = file.name.split(".")
+            let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
 
             fs.unlink(path, function(err){
                   if (err) deferred.reject(err)
