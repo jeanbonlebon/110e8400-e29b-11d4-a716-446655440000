@@ -8,7 +8,8 @@ const Q = require('q'),
       File = require('../models/file'),
       Folder = require('../models/folder');
 
-const checkMalware = require('../helpers/checkMalware');
+const checkMalware = require('../helpers/checkMalware'),
+      getFilePath = require('../helpers/getFilePath');
 
 var controller = {};
 
@@ -17,6 +18,7 @@ var controller = {};
 
 controller.GET_Files = GET_Files;
 controller.GET_File = GET_File;
+controller.DOWNLOAD_File = DOWNLOAD_File;
 controller.POST_File = POST_File;
 controller.MOVE_File = MOVE_File;
 controller.RENAME_File = RENAME_File;
@@ -51,9 +53,29 @@ function GET_File(file_id, _id) {
     return deferred.promise
 }
 
+function DOWNLOAD_File(file_id, _id) {
+    var deferred = Q.defer()
+
+    File.findOne({ _id : file_id, user : _id }, function(err, file) {
+        if (err) deferred.reject(err)
+        if (!file) deferred.reject({status: 'Not Found', statusCode: 400})
+
+        let filePath = getFilePath(file, _id)
+        fs.readFile(filePath, function(err, buffer) {
+            if (err) deferred.reject(err)
+            if (!buffer) deferred.reject({status: 'Not Found', statusCode: 400})
+
+            deferred.resolve(buffer)
+        })
+    })
+
+    return deferred.promise
+}
+
+
 function POST_File(folder, dataFile, _id) {
     var deferred = Q.defer()
-    console.log(folder, dataFile, _id)
+
     User.findById(_id, function(err, user) {
         if (err) deferred.reject(err)
 
@@ -145,8 +167,7 @@ function DELETE_File(file_id, _id) {
         File.findById(file_id, function(err, file) {
             if (err) deferred.reject(err)
 
-            let extension = file.name.split(".")
-            let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
+            let filePath = getFilePath(file, user._id)
 
             fs.unlink(path, function(err){
                   if (err) deferred.reject(err)

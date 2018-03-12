@@ -11,6 +11,7 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 
 router.get('/:id', requireAuth, GET_Files);
 router.get('/one/:id', requireAuth, GET_File);
+router.get('/download/:id', requireAuth, DOWNLOAD_File);
 router.post('/:id', requireAuth, upload.single('file'), POST_File);
 router.put('/move/:id', requireAuth, MOVE_File);
 router.put('/rename/:id', requireAuth, RENAME_File);
@@ -30,8 +31,18 @@ function GET_Files(req, res, next) {
 
 function GET_File(req, res, next) {
     FileControllers.GET_File(req.params.id, req.user._id)
-        .then(function (files) {
-            res.send(files)
+        .then(function (file) {
+            res.send(file)
+        })
+        .catch(function(err) {
+            res.send(err)
+        })
+}
+
+function DOWNLOAD_File(req, res, next) {
+    FileControllers.DOWNLOAD_File(req.params.id, req.user._id)
+        .then(function (file) {
+            res.send(file)
         })
         .catch(function(err) {
             res.send(err)
