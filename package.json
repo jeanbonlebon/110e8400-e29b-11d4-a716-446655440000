@@ -1,13 +1,15 @@
 {
   "name": "supfile_api",
   "version": "1.0.0",
-  "description": "API for SuFile Project SUPINFO MSC",
-  "main": "serveur.js",
+  "description": "API for SupFile Project - SUPINFO MSC1",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/jeanbonlebon/110e8400-e29b-11d4-a716-446655440000.git"
   },
   "scripts": {
+    "start": "nodemon server.js",
+    "apidoc": "apidoc -e \"(node_modules|.git|config|controllers|doc|helpers|models|tmp)\" -o doc -t C:\\Users\\Robin\\Desktop\\Projets\\apidoc-template",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Robin Gross",
@@ -32,5 +34,6 @@
     "passport-local": "^1.0.0",
     "q": "^1.5.1",
     "rmdir": "^1.2.0"
-  }
+  },
+  "devDependencies": {}
 }

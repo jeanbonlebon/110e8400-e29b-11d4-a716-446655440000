@@ -17,6 +17,16 @@ router.delete('/:id', requireAuth, DELETE_Folder);
 
 module.exports = router;
 
+/**
+ * @api {post} /api/folder Create a folder
+ * @apiGroup Folder
+ * @apiParam {String} name Folder name
+ * @apiParam {String} parent ID of parent folder (Set to 'null' if it's a root folder)
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ * @apiErrorExample {json} Error
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function POST_Folder(req, res, next) {
     FolderControllers.POST_Folder(req.body, req.user._id)
         .then(function () {
@@ -27,6 +37,33 @@ function POST_Folder(req, res, next) {
         })
 }
 
+/**
+ * @api {get} /api/folder/:_id Get a folder
+ * @apiGroup Folder
+ * @apiParam {String} _id Folder ID
+ * @apiSuccess {String} folders._id Folder ID
+ * @apiSuccess {String} folders.name Folder name
+ * @apiSuccess {String} folders.path Absolute path to this folder
+ * @apiSuccess {String} folders.user User ID
+ * @apiSuccess {String} folders.parent Immediate folder parent ID (null if it's a root folder)
+ * @apiSuccess {String[]} folders.parents All parents ID of this folder (null if it's a root folder)
+ * @apiSuccess {Date} tasks.updated_at Update's date
+ * @apiSuccess {Date} tasks.created_at Register's date
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "_id": "5a5de2dfdf0d632814b91540",
+ *      "name": "MyFolder",
+ *      "path": "/ApiFolder/MyFolder"
+ *      "user": "5a5de2dfdf0d632814b91540",
+ *      "parent": "7a5814dfdf0d632814b91814",
+ *      "parents": ["7a5814dfdf0d632814b91814","5a5dezdfdf0d638824c91550"],
+ *      "updated_at": "2016-02-10T15:46:51.778Z",
+ *      "created_at": "2016-02-10T15:46:51.778Z"
+ *    }
+ * @apiErrorExample {json} Error
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function GET_Folder(req, res, next) {
     FolderControllers.GET_Folder(req.params.id, req.user._id)
         .then(function (folder) {
@@ -37,6 +74,33 @@ function GET_Folder(req, res, next) {
         })
 }
 
+/**
+ * @api {get} /api/folder/childs/:_id Get all childs of folder
+ * @apiGroup Folder
+ * @apiParam {String} _id Folder ID
+ * @apiSuccess {String} folders._id Folder ID
+ * @apiSuccess {String} folders.name Folder name
+ * @apiSuccess {String} folders.path Absolute path to this folder
+ * @apiSuccess {String} folders.user User ID
+ * @apiSuccess {String} folders.parent Immediate folder parent ID (null if it's a root folder)
+ * @apiSuccess {String[]} folders.parents All parents ID of this folder (null if it's a root folder)
+ * @apiSuccess {Date} tasks.updated_at Update's date
+ * @apiSuccess {Date} tasks.created_at Register's date
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    [{
+ *      "_id": "5a5de2dfdf0d632814b91540",
+ *      "name": "MyFolder",
+ *      "path": "/ApiFolder/MyFolder"
+ *      "user": "5a5de2dfdf0d632814b91540",
+ *      "parent": "7a5814dfdf0d632814b91814",
+ *      "parents": ["7a5814dfdf0d632814b91814","5a5dezdfdf0d638824c91550"],
+ *      "updated_at": "2016-02-10T15:46:51.778Z",
+ *      "created_at": "2016-02-10T15:46:51.778Z"
+ *    }]
+ * @apiErrorExample {json} Error
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function GET_ChildsFolder(req, res, next) {
     FolderControllers.GET_ChildsFolder(req.params.id, req.user._id)
         .then(function (folders) {
@@ -47,6 +111,20 @@ function GET_ChildsFolder(req, res, next) {
         })
 }
 
+/**
+ * @api {put} /api/folder/move/:_id Move a folder
+ * @apiGroup Folder
+ * @apiParam {String} _id Folder ID
+ * @apiParam {String} folder Folder ID of new location ('null' if it's a root folder)
+ * @apiParamExample {json} Input
+ *    {
+ *      "folder": "7a5814dfdf0d632814b91814"
+ *    }
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ * @apiErrorExample {json} Error
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function MOVE_Folder(req, res, next) {
     FolderControllers.MOVE_Folder(req.body.folder, req.params.id, req.user._id)
         .then(function () {

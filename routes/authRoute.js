@@ -16,6 +16,27 @@ router.post('/google', requireGoogle, login);
 
 module.exports = router;
 
+/**
+ * @api {post} /api/auth Login
+ * @apiGroup Auth
+ * @apiParam {String} email E-Mail Address
+ * @apiParam {String} password Password
+ * @apiSuccess {String} token JSON Web Token
+ * @apiSuccess {Object} profile User Informations
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "token": "7MEeQhKRzu7MEeQhKRzuqWlmiJdvWqWlmiJd7MEeQh7MEeQhKRzuqKRzuqWlmiJdvWvW",
+ *      "user": {
+ *          "_id": 5aa67e34a1f8d1567c847462,
+ *          "firstName": "John",
+ *          "lastName": "Doe",
+ *          "email": "john.doe@gmail.com"
+ *      },
+ *    }
+ * @apiErrorExample {json} Register error
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function login(req, res, next) {
     AuthControllers.login(req)
         .then(function (user) {
@@ -26,6 +47,30 @@ function login(req, res, next) {
         })
 }
 
+/**
+ * @api {post} /api/register Register
+ * @apiGroup Auth
+ * @apiParam {String} email E-Mail Address
+ * @apiParam {String} password Password
+ * @apiParam {String} firstName User firstname
+ * @apiParam {String} lastName User lastname
+ * @apiSuccess {String} token JSON Web Token
+ * @apiSuccess {Object} profile User Informations
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "token": "7MEeQhKRzu7MEeQhKRzuqWlmiJdvWqWlmiJd7MEeQh7MEeQhKRzuqKRzuqWlmiJdvWvW",
+ *      "user": {
+ *          "_id": 5aa67e34a1f8d1567c847462,
+ *          "firstName": "John",
+ *          "lastName": "Doe",
+ *          "email": "john.doe@gmail.com"
+ *      },
+ *    }
+ * @apiErrorExample {json} Register error
+ *    HTTP/1.1 422 That email address is already in use
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function register(req, res, next) {
     AuthControllers.register(req.body)
         .then(function (user) {
