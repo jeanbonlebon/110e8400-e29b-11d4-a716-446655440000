@@ -24,7 +24,7 @@ module.exports = router;
  * @apiParam {String} parent ID of parent folder (Set to 'null' if it's a root folder)
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
- * @apiErrorExample {json} Error
+ * @apiErrorExample {json} Errors
  *    HTTP/1.1 500 Internal Server Error
  */
 function POST_Folder(req, res, next) {
@@ -61,7 +61,7 @@ function POST_Folder(req, res, next) {
  *      "updated_at": "2016-02-10T15:46:51.778Z",
  *      "created_at": "2016-02-10T15:46:51.778Z"
  *    }
- * @apiErrorExample {json} Error
+ * @apiErrorExample {json} Errors
  *    HTTP/1.1 500 Internal Server Error
  */
 function GET_Folder(req, res, next) {
@@ -98,7 +98,7 @@ function GET_Folder(req, res, next) {
  *      "updated_at": "2016-02-10T15:46:51.778Z",
  *      "created_at": "2016-02-10T15:46:51.778Z"
  *    }]
- * @apiErrorExample {json} Error
+ * @apiErrorExample {json} Errors
  *    HTTP/1.1 500 Internal Server Error
  */
 function GET_ChildsFolder(req, res, next) {
@@ -122,7 +122,7 @@ function GET_ChildsFolder(req, res, next) {
  *    }
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
- * @apiErrorExample {json} Error
+ * @apiErrorExample {json} Errors
  *    HTTP/1.1 500 Internal Server Error
  */
 function MOVE_Folder(req, res, next) {
@@ -135,6 +135,20 @@ function MOVE_Folder(req, res, next) {
         })
 }
 
+/**
+ * @api {put} /api/folder/rename/:_id Move a folder
+ * @apiGroup Folder
+ * @apiParam {String} _id Folder ID
+ * @apiParam {String} folder Folder ID of new location ('null' if it's a root folder)
+ * @apiParamExample {json} Input
+ *    {
+ *      "folder": "7a5814dfdf0d632814b91814"
+ *    }
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function RENAME_Folder(req, res, next) {
     FolderControllers.RENAME_Folder(req.body.name, req.params.id, req.user._id)
         .then(function () {
