@@ -18,7 +18,7 @@ router.delete('/:id', requireAuth, DELETE_Folder);
 module.exports = router;
 
 /**
- * @api {post} /api/folder Create a folder
+ * @api {post} /folder Create a folder
  * @apiGroup Folder
  * @apiParam {String} name Folder name
  * @apiParam {String} parent ID of parent folder (Set to 'null' if it's a root folder)
@@ -38,7 +38,7 @@ function POST_Folder(req, res, next) {
 }
 
 /**
- * @api {get} /api/folder/:_id Get a folder
+ * @api {get} /folder/:_id Get a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiSuccess {String} folders._id Folder ID
@@ -75,7 +75,7 @@ function GET_Folder(req, res, next) {
 }
 
 /**
- * @api {get} /api/folder/childs/:_id Get all childs of folder
+ * @api {get} /folder/childs/:_id Get all childs of folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiSuccess {String} folders._id Folder ID
@@ -112,7 +112,7 @@ function GET_ChildsFolder(req, res, next) {
 }
 
 /**
- * @api {put} /api/folder/move/:_id Move a folder
+ * @api {put} /folder/move/:_id Move a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiParam {String} folder Folder ID of new location ('null' if it's a root folder)
@@ -136,13 +136,13 @@ function MOVE_Folder(req, res, next) {
 }
 
 /**
- * @api {put} /api/folder/rename/:_id Move a folder
+ * @api {put} /folder/rename/:_id Rename a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
- * @apiParam {String} folder Folder ID of new location ('null' if it's a root folder)
+ * @apiParam {String} name New name
  * @apiParamExample {json} Input
  *    {
- *      "folder": "7a5814dfdf0d632814b91814"
+ *      "name": "4ERP"
  *    }
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
@@ -159,6 +159,15 @@ function RENAME_Folder(req, res, next) {
         })
 }
 
+/**
+ * @api {delete} /folder/:_id Delete a folder
+ * @apiGroup Folder
+ * @apiParam {String} _id Folder ID
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function DELETE_Folder(req, res, next) {
     FolderControllers.DELETE_Folder(req.params.id, req.user._id)
         .then(function () {

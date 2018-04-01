@@ -1,8 +1,0 @@
-{
-    "name": "Supfile API",
-    "version": "1.0.0",
-    "description": "API for SupFile - Web App Storage and Sharing",
-    "template": {
-        "forceLanguage": "en"
-    }
-}
