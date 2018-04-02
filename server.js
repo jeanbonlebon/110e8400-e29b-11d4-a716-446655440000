@@ -11,12 +11,6 @@ const UserRoute = require('./routes/userRoute.js'),
       FolderRoute = require('./routes/folderRoute.js'),
       FileRoute = require('./routes/fileRoute.js');
 
-/**
-* @apiDescription This is the Description.
-* It is multiline capable.
-*
-* Last line of Description.
-*/
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database);

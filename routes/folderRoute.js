@@ -22,6 +22,11 @@ module.exports = router;
  * @apiGroup Folder
  * @apiParam {String} name Folder name
  * @apiParam {String} parent ID of parent folder (Set to 'null' if it's a root folder)
+ * @apiParamExample {json} Input
+ *    {
+ *      "name": "Vidéos",
+ *      "parent": "7a5814dfdf0d632814b91814"
+ *    }
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  * @apiErrorExample {json} Errors
@@ -47,14 +52,14 @@ function POST_Folder(req, res, next) {
  * @apiSuccess {String} folders.user User ID
  * @apiSuccess {String} folders.parent Immediate folder parent ID (null if it's a root folder)
  * @apiSuccess {String[]} folders.parents All parents ID of this folder (null if it's a root folder)
- * @apiSuccess {Date} tasks.updated_at Update's date
- * @apiSuccess {Date} tasks.created_at Register's date
+ * @apiSuccess {Date} folders.updated_at Update's date
+ * @apiSuccess {Date} folders.created_at Register's date
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    {
  *      "_id": "5a5de2dfdf0d632814b91540",
  *      "name": "MyFolder",
- *      "path": "/ApiFolder/MyFolder"
+ *      "path": "/ApiFolder/MyFolder",
  *      "user": "5a5de2dfdf0d632814b91540",
  *      "parent": "7a5814dfdf0d632814b91814",
  *      "parents": ["7a5814dfdf0d632814b91814","5a5dezdfdf0d638824c91550"],
@@ -84,14 +89,14 @@ function GET_Folder(req, res, next) {
  * @apiSuccess {String} folders.user User ID
  * @apiSuccess {String} folders.parent Immediate folder parent ID (null if it's a root folder)
  * @apiSuccess {String[]} folders.parents All parents ID of this folder (null if it's a root folder)
- * @apiSuccess {Date} tasks.updated_at Update's date
- * @apiSuccess {Date} tasks.created_at Register's date
+ * @apiSuccess {Date} folders.updated_at Update's date
+ * @apiSuccess {Date} folders.created_at Register's date
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    [{
  *      "_id": "5a5de2dfdf0d632814b91540",
  *      "name": "MyFolder",
- *      "path": "/ApiFolder/MyFolder"
+ *      "path": "/ApiFolder/MyFolder",
  *      "user": "5a5de2dfdf0d632814b91540",
  *      "parent": "7a5814dfdf0d632814b91814",
  *      "parents": ["7a5814dfdf0d632814b91814","5a5dezdfdf0d638824c91550"],

@@ -20,6 +20,20 @@ router.delete('/:id', requireAuth, DELETE_File);
 module.exports = router;
 
 
+/**
+ * @api {post} /file/:_id Upload a file
+ * @apiGroup File
+ * @apiParam {String} _id Folder ID (Set to 'null' if it's a root folder)
+ * @apiParam {Object} file File FormData
+ * @apiParamExample {json} Input
+ *    {
+ *      "file": new FormData ([video.mp4]),
+ *    }
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function POST_File(req, res, next) {
     FileControllers.POST_File(req.params.id, req.files, req.user._id)
         .then(function () {
@@ -30,6 +44,33 @@ function POST_File(req, res, next) {
         })
 }
 
+/**
+ * @api {get} /file/:_id Get all files in folder
+ * @apiGroup File
+ * @apiParam {String} _id Folder ID (null if it's root)
+ * @apiSuccess {String} files._id File ID
+ * @apiSuccess {String} files.name File name
+ * @apiSuccess {String} files.user User ID
+ * @apiSuccess {String} files.folder Folder ID (null if it's a root folder)
+ * @apiSuccess {Number} files.size File size (in bytes)
+ * @apiSuccess {String} files.type File mimeType
+ * @apiSuccess {Date} files.updated_at Update's date
+ * @apiSuccess {Date} files.created_at Register's date
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    [{
+ *      "_id": "5a5de2dfdf0d632814b91540",
+ *      "name": "Resumé.pdf",
+ *      "user": "5a5de2dfdf0d632814b91540",
+ *      "folder": "7a5814dfdf0d632814b91814",
+ *      "size": 48521555,
+ *      "type": "application/pdf",
+ *      "updated_at": "2016-02-10T15:46:51.778Z",
+ *      "created_at": "2016-02-10T15:46:51.778Z"
+ *    }]
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function GET_Files(req, res, next) {
     FileControllers.GET_Files(req.params.id, req.user._id)
         .then(function (files) {
@@ -40,6 +81,33 @@ function GET_Files(req, res, next) {
         })
 }
 
+/**
+ * @api {get} /file/one/:_id Get one file
+ * @apiGroup File
+ * @apiParam {String} _id File ID
+ * @apiSuccess {String} files._id File ID
+ * @apiSuccess {String} files.name File name
+ * @apiSuccess {String} files.user User ID
+ * @apiSuccess {String} files.folder Folder ID (null if it's a root folder)
+ * @apiSuccess {Number} files.size File size (in bytes)
+ * @apiSuccess {String} files.type File mimeType
+ * @apiSuccess {Date} files.updated_at Update's date
+ * @apiSuccess {Date} files.created_at Register's date
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "_id": "5a5de2dfdf0d632814b91540",
+ *      "name": "Resumé.pdf",
+ *      "user": "5a5de2dfdf0d632814b91540",
+ *      "folder": "7a5814dfdf0d632814b91814",
+ *      "size": 48521555,
+ *      "type": "application/pdf",
+ *      "updated_at": "2016-02-10T15:46:51.778Z",
+ *      "created_at": "2016-02-10T15:46:51.778Z"
+ *    }
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function GET_File(req, res, next) {
     FileControllers.GET_File(req.params.id, req.user._id)
         .then(function (file) {
@@ -117,6 +185,14 @@ function DELETE_File(req, res, next) {
         })
 }
 
+/**
+ * @api {get} /file/download/:_id Download a file
+ * @apiGroup File
+ * @apiParam {String} _id File ID
+ * @apiSuccess {Buffer[]} buffer Data of file as Array Buffer
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function DOWNLOAD_File(req, res, next) {
     FileControllers.DOWNLOAD_File(req.params.id, req.user._id)
         .then(function (file) {
