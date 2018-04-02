@@ -1,6 +1,7 @@
 const Q = require('q'),
       mongoose = require('mongoose'),
       _ = require('lodash'),
+      config = require('../config/main'),
       sha3_256 = require('js-sha3').sha3_256,
       fs = require('fs'),
       mv = require('mv'),
@@ -13,7 +14,6 @@ const checkMalware = require('../helpers/checkMalware'),
 
 var controller = {};
 
-//ClamScan -> Vérification des malware
 //30GO = 32212254720 octets
 
 controller.GET_Files = GET_Files;
@@ -90,7 +90,7 @@ function POST_File(folder, dataFile, _id) {
 
         let extension = file.name.split(".")
         let pathTmp = './tmp/' + dataFile[0].filename
-        let path = '../folders/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
+        let path = config.data_path + '/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
 
 /*
         checkMalware(file.name, file.type, pathTmp)

@@ -17,7 +17,7 @@ mongoose.connect(config.database);
 
 var app = express();
 
-app.use('/files', express.static('../folders'));
+app.use('/files', express.static(config.data_path));
 app.use('/doc', express.static('doc'));
 
 app.use(function(req, res, next) {

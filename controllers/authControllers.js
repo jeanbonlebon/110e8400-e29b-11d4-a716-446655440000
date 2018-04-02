@@ -54,7 +54,7 @@ function register(req) {
 
             let userInfo = setUserInfo(user);
 
-            mkdirp('../folders/' + sha3_256(user._id.toString()), function (err) {
+            mkdirp(config.data_path + '/' + sha3_256(user._id.toString()), function (err) {
                 if (err) deferred.reject(err)
 
                 deferred.resolve({
