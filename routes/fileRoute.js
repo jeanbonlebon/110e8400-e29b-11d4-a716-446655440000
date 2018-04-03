@@ -21,7 +21,7 @@ module.exports = router;
 
 
 /**
- * @api {post} /file/:_id Upload a file
+ * @api {post} /file/:_id /POST/ Upload a file
  * @apiGroup File
  * @apiParam {String} _id Folder ID (Set to 'null' if it's a root folder)
  * @apiParam {Object} file File FormData
@@ -45,7 +45,7 @@ function POST_File(req, res, next) {
 }
 
 /**
- * @api {get} /file/:_id Get all files in folder
+ * @api {get} /file/:_id /GET/ Get all files in folder
  * @apiGroup File
  * @apiParam {String} _id Folder ID (null if it's root)
  * @apiSuccess {String} files._id File ID
@@ -82,7 +82,7 @@ function GET_Files(req, res, next) {
 }
 
 /**
- * @api {get} /file/one/:_id Get one file
+ * @api {get} /file/one/:_id /GET/ Get one file
  * @apiGroup File
  * @apiParam {String} _id File ID
  * @apiSuccess {String} files._id File ID
@@ -119,7 +119,7 @@ function GET_File(req, res, next) {
 }
 
 /**
- * @api {put} /file/move/:_id Move a file
+ * @api {put} /file/move/:_id /PUT/ Move a file
  * @apiGroup File
  * @apiParam {String} _id File ID
  * @apiParam {String} folder Folder ID of new location ('null' if it's a root folder)
@@ -143,7 +143,7 @@ function MOVE_File(req, res, next) {
 }
 
 /**
- * @api {put} /file/rename/:_id Rename a file
+ * @api {put} /file/rename/:_id /PUT/ Rename a file
  * @apiGroup File
  * @apiParam {String} _id File ID
  * @apiParam {String} name New name
@@ -167,7 +167,7 @@ function RENAME_File(req, res, next) {
 }
 
 /**
- * @api {delete} /file/:_id Delete a file
+ * @api {delete} /file/:_id /DELETE/ Delete a file
  * @apiGroup File
  * @apiParam {String} _id File ID
  * @apiSuccessExample {json} Success
@@ -186,7 +186,7 @@ function DELETE_File(req, res, next) {
 }
 
 /**
- * @api {get} /file/download/:_id Download a file
+ * @api {get} /file/download/:_id /GET/ Download a file
  * @apiGroup File
  * @apiParam {String} _id File ID
  * @apiSuccess {Buffer[]} buffer Data of file as Array Buffer

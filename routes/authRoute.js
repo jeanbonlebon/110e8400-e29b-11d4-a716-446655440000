@@ -17,7 +17,7 @@ router.post('/google', requireGoogle, login);
 module.exports = router;
 
 /**
- * @api {post} /auth/login Login
+ * @api {post} /auth/login /POST/ Login
  * @apiGroup Auth
  * @apiParam {String} email E-Mail Address
  * @apiParam {String} password Password
@@ -53,7 +53,7 @@ function login(req, res, next) {
 }
 
 /**
- * @api {post} /auth/register Register
+ * @api {post} /auth/register /POST/ Register
  * @apiGroup Auth
  * @apiParam {String} email E-Mail Address
  * @apiParam {String} password Password

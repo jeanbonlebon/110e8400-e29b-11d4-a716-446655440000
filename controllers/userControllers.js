@@ -28,8 +28,6 @@ function PUT_Users(body, _id) {
         if (err) deferred.reject(err)
 
         if (body.email != user.mail)  user.mail = body.mail
-        if (body.firstName != user.profile.firstName)  user.profile.firstName = body.firstName
-        if (body.lastName != user.profile.lastName)  user.profile.lastName = body.lastName
 
         user.save(function(err, mdUser) {
             if (err) deferred.reject(err)
