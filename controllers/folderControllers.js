@@ -5,12 +5,15 @@ const Q = require('q'),
       sha3_256 = require('js-sha3').sha3_256,
       fs = require('fs'),
       mkdirp = require('mkdirp'),
+      zip = require('file-zip'),
       rmdir = require('rmdir'),
       mv = require('mv'),
       User = require('../models/user'),
-      Folder = require('../models/folder');
+      Folder = require('../models/folder'),
+      File = require('../models/file');
 
 const folderMultiUpdate = require('../helpers/folderMultiUpdate'),
+      getFilePath = require('../helpers/getFilePath'),
       folderUpdateMovePath = require('../helpers/folderUpdateMovePath');
 
 var controller = {};
@@ -18,6 +21,7 @@ var controller = {};
 controller.POST_Folder = POST_Folder;
 controller.GET_Folder = GET_Folder;
 controller.GET_ChildsFolder = GET_ChildsFolder;
+controller.DOWNLOAD_Folder = DOWNLOAD_Folder;
 controller.MOVE_Folder = MOVE_Folder;
 controller.RENAME_Folder = RENAME_Folder;
 controller.DELETE_Folder = DELETE_Folder;
@@ -75,7 +79,7 @@ function POST_Folder(req, _id) {
 }
 
 function GET_Folder(folderID, userID) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
 
     Folder.findOne({ _id: folderID, user : userID }, function(err, folder) {
         if (err) deferred.reject(err)
@@ -83,19 +87,54 @@ function GET_Folder(folderID, userID) {
         deferred.resolve(folder)
     })
 
-    return deferred.promise;
+    return deferred.promise
 }
 
 function GET_ChildsFolder(folderID, userID) {
-    var deferred = Q.defer();
+    var deferred = Q.defer()
+
     folderID == 'null' ? folderID = null : null
+
     Folder.find({ parent: folderID, user : userID }, function(err, folders) {
         if (err) deferred.reject(err)
 
         deferred.resolve(folders)
     })
 
-    return deferred.promise;
+    return deferred.promise
+}
+
+function DOWNLOAD_Folder(folderID, userID) {
+    var deferred = Q.defer()
+
+    File.find({ folder : folderID, user : userID }).lean().exec(function(err, files) {
+        if (err) deferred.reject(err)
+        if (_.isEmpty(files)) deferred.reject({status: 'Not Found', statusCode: 400})
+
+        let pathArray = []
+        let pathTmp = './tmp/' + folderID + '.zip'
+
+        files.forEach(x => {
+            pathArray.push(getFilePath(x, userID))
+        })
+
+        zip.zipFile(pathArray, pathTmp, function(err) {
+            if (err) deferred.reject(err)
+
+            fs.readFile(pathTmp, function(err, buffer) {
+                if (err) deferred.reject(err)
+                if (!buffer) deferred.reject({status: 'Not Found', statusCode: 400})
+
+                fs.unlink(pathTmp, function(err) {
+                      if (err) deferred.reject(err)
+
+                      deferred.resolve(buffer)
+                })
+            })
+        }) 
+    })
+
+    return deferred.promise
 }
 
 function MOVE_Folder(toID, fromID, userID) {

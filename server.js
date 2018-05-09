@@ -2,6 +2,7 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
       config = require('./config/main'),
+      cors = require('cors'),
       multer  = require('multer'),
       upload = multer(),
       passport = require('passport');
@@ -17,16 +18,9 @@ mongoose.connect(config.database);
 
 var app = express();
 
+app.use(cors());
 app.use('/files', express.static(config.data_path));
 app.use('/doc', express.static('doc'));
-
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200, http://supfile.org');
-  res.setHeader('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
 
 app.use(multer({ dest: './tmp/',
     rename: function (fieldname, filename) {
@@ -40,9 +34,9 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/auth', AuthRoute);
-app.use('/api/user', UserRoute);
-app.use('/api/folder', FolderRoute);
-app.use('/api/file', FileRoute);
+app.use('/auth', AuthRoute);
+app.use('/user', UserRoute);
+app.use('/folder', FolderRoute);
+app.use('/file', FileRoute);
 
 app.listen(3000);

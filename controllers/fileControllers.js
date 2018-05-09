@@ -45,7 +45,7 @@ function GET_File(file_id, _id) {
 
     File.findOne({ _id : file_id, user : _id }, function(err, file) {
         if (err) deferred.reject(err)
-        if (!file) deferred.reject({status: 'Not Found', statusCode: 400})
+        if (_.isEmpty(file)) deferred.reject({status: 'Not Found', statusCode: 400})
 
         deferred.resolve(file)
     })
@@ -58,7 +58,7 @@ function DOWNLOAD_File(file_id, _id) {
 
     File.findOne({ _id : file_id, user : _id }, function(err, file) {
         if (err) deferred.reject(err)
-        if (!file) deferred.reject({status: 'Not Found', statusCode: 400})
+        if (_.isEmpty(file)) deferred.reject({status: 'Not Found', statusCode: 400})
 
         let filePath = getFilePath(file, _id)
         fs.readFile(filePath, function(err, buffer) {
@@ -125,7 +125,7 @@ function MOVE_File(toFolder, file_id, userID) {
 
     File.findById(file_id, function(err, file) {
         if (err) deferred.reject(err)
-        if (!file || file.user != userID) deferred.reject({status: 'Not Found', statusCode: 400})
+        if (_.isEmpty(file) || file.user != userID) deferred.reject({status: 'Not Found', statusCode: 400})
 
         file.folder = toFolder
 
@@ -144,7 +144,7 @@ function RENAME_File(newName, file_id, userID) {
 
     File.findById(file_id, function(err, file) {
         if (err) deferred.reject(err)
-        if (!file || file.user != userID) deferred.reject({status: 'Not Found', statusCode: 400})
+        if (_.isEmpty(file) || file.user != userID) deferred.reject({status: 'Not Found', statusCode: 400})
 
         file.name = newName
 
@@ -169,15 +169,20 @@ function DELETE_File(file_id, _id) {
 
             let filePath = getFilePath(file, user._id)
 
-            fs.unlink(path, function(err){
-                  if (err) deferred.reject(err)
+            fs.unlink(filePath, function(err) {
+                if (err) deferred.reject(err)
 
-                  File.remove({ _id : file._id }, function(err) {
-                      if (err) deferred.reject(err)
+                File.remove({ _id : file._id }, function(err) {
+                    if (err) deferred.reject(err)
 
-                      deferred.resolve()
-                  })
-             })
+                    user.space_available += file.size
+                    user.save(function (err) {
+                        if (err) deferred.reject(err)
+
+                        deferred.resolve()
+                    })
+                })
+            })
         })
     })
 

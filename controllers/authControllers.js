@@ -46,7 +46,7 @@ function register(req) {
           email: email,
           password: password,
           profile: { firstName: firstName, lastName: lastName },
-          space_available: 4026531840
+          space_available: 32212254720
         });
 
         user.save(function(err, user) {

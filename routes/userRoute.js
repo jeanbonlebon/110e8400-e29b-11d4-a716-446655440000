@@ -13,9 +13,8 @@ router.put('/', requireAuth, PUT_Users);
 module.exports = router;
 
 /**
- * @api {get} /folder/childs/:_id /GET/ Get Current User
+ * @api {get} /user /GET/ Get Current User
  * @apiGroup User
- * @apiParam {String} _id User ID
  * @apiSuccess {String} user._id User ID
  * @apiSuccess {String} user.email User E-Mail
  * @apiSuccess {Object} user.profile User Profile infos
@@ -26,7 +25,7 @@ module.exports = router;
  * @apiSuccess {Date} user.created_at Register's date
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
- *    [{
+ *    {
  *      "_id": "5a5de2dfdf0d632814b91540",
  *      "name": "john.doe@gmail.com",
  *      "profile": {
@@ -44,7 +43,7 @@ module.exports = router;
  *      },
  *      "updated_at": "2016-02-10T15:46:51.778Z",
  *      "created_at": "2016-02-10T15:46:51.778Z"
- *    }]
+ *    }
  * @apiErrorExample {json} Errors
  *    HTTP/1.1 500 Internal Server Error
  */
@@ -59,9 +58,8 @@ function GET_Users(req, res, next) {
 }
 
 /**
- * @api {put} /user/:_id /PUT/ Change E-Mail Address
+ * @api {put} /user /PUT/ Change E-Mail Address
  * @apiGroup User
- * @apiParam {String} _id User ID
  * @apiParam {String} email New E-Mail address
  * @apiParamExample {json} Input
  *    {

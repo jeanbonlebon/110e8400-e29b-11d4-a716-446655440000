@@ -77,7 +77,7 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
                     id: profile.id,
                     token: accessToken
                 },
-                space_available: 4026531840
+                space_available: 32212254720
             })
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
@@ -108,7 +108,7 @@ UserSchema.statics.upsertGlUser = function(accessToken, refreshToken, profile, c
                     id: profile.id,
                     token: accessToken
                 },
-                space_available: 4026531840
+                space_available: 32212254720
             })
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
