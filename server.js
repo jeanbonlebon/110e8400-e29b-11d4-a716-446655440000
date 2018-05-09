@@ -11,19 +11,13 @@ const UserRoute = require('./routes/userRoute.js'),
       FolderRoute = require('./routes/folderRoute.js'),
       FileRoute = require('./routes/fileRoute.js');
 
-/**
-* @apiDescription This is the Description.
-* It is multiline capable.
-*
-* Last line of Description.
-*/
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database);
 
 var app = express();
 
-app.use('/files', express.static('../folders'));
+app.use('/files', express.static(config.data_path));
 app.use('/doc', express.static('doc'));
 
 app.use(function(req, res, next) {

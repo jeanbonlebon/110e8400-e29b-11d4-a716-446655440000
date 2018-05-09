@@ -1,6 +1,7 @@
 const Q = require('q'),
       mongoose = require('mongoose'),
       _ = require('lodash'),
+      config = require('../config/main'),
       sha3_256 = require('js-sha3').sha3_256,
       fs = require('fs'),
       mkdirp = require('mkdirp'),
@@ -35,7 +36,7 @@ function POST_Folder(req, _id) {
             parent: null,
         });
 
-        let path = '../folders/' + sha3_256(user._id.toString())
+        let path = config.data_path + '/' + sha3_256(user._id.toString())
 
         if(req.parent != 'null') {
 
@@ -106,7 +107,7 @@ function MOVE_Folder(toID, fromID, userID) {
         Folder.find({ parents : fromFolder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
-            let racinePath = '../folders/' + sha3_256(fromFolder.user.toString())
+            let racinePath = config.data_path + '/' + sha3_256(fromFolder.user.toString())
             let oldPath = fromFolder.path
 
             if(childs.length) {
@@ -256,7 +257,7 @@ function DELETE_Folder(id, userID) {
         Folder.find({ parents : folder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
-            let path = '../folders/' + sha3_256(folder.user.toString()) + folder.path
+            let path = config.data_path + '/' + sha3_256(folder.user.toString()) + folder.path
 
             if(childs.length) {
 

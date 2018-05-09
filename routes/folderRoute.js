@@ -18,10 +18,15 @@ router.delete('/:id', requireAuth, DELETE_Folder);
 module.exports = router;
 
 /**
- * @api {post} /folder Create a folder
+ * @api {post} /folder /POST/ Create a folder
  * @apiGroup Folder
  * @apiParam {String} name Folder name
  * @apiParam {String} parent ID of parent folder (Set to 'null' if it's a root folder)
+ * @apiParamExample {json} Input
+ *    {
+ *      "name": "Vidéos",
+ *      "parent": "7a5814dfdf0d632814b91814"
+ *    }
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  * @apiErrorExample {json} Errors
@@ -38,7 +43,7 @@ function POST_Folder(req, res, next) {
 }
 
 /**
- * @api {get} /folder/:_id Get a folder
+ * @api {get} /folder/:_id /GET/ Get a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiSuccess {String} folders._id Folder ID
@@ -47,14 +52,14 @@ function POST_Folder(req, res, next) {
  * @apiSuccess {String} folders.user User ID
  * @apiSuccess {String} folders.parent Immediate folder parent ID (null if it's a root folder)
  * @apiSuccess {String[]} folders.parents All parents ID of this folder (null if it's a root folder)
- * @apiSuccess {Date} tasks.updated_at Update's date
- * @apiSuccess {Date} tasks.created_at Register's date
+ * @apiSuccess {Date} folders.updated_at Update's date
+ * @apiSuccess {Date} folders.created_at Register's date
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    {
  *      "_id": "5a5de2dfdf0d632814b91540",
  *      "name": "MyFolder",
- *      "path": "/ApiFolder/MyFolder"
+ *      "path": "/ApiFolder/MyFolder",
  *      "user": "5a5de2dfdf0d632814b91540",
  *      "parent": "7a5814dfdf0d632814b91814",
  *      "parents": ["7a5814dfdf0d632814b91814","5a5dezdfdf0d638824c91550"],
@@ -75,7 +80,7 @@ function GET_Folder(req, res, next) {
 }
 
 /**
- * @api {get} /folder/childs/:_id Get all childs of folder
+ * @api {get} /folder/childs/:_id /GET/ Get all childs of folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiSuccess {String} folders._id Folder ID
@@ -84,14 +89,14 @@ function GET_Folder(req, res, next) {
  * @apiSuccess {String} folders.user User ID
  * @apiSuccess {String} folders.parent Immediate folder parent ID (null if it's a root folder)
  * @apiSuccess {String[]} folders.parents All parents ID of this folder (null if it's a root folder)
- * @apiSuccess {Date} tasks.updated_at Update's date
- * @apiSuccess {Date} tasks.created_at Register's date
+ * @apiSuccess {Date} folders.updated_at Update's date
+ * @apiSuccess {Date} folders.created_at Register's date
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    [{
  *      "_id": "5a5de2dfdf0d632814b91540",
  *      "name": "MyFolder",
- *      "path": "/ApiFolder/MyFolder"
+ *      "path": "/ApiFolder/MyFolder",
  *      "user": "5a5de2dfdf0d632814b91540",
  *      "parent": "7a5814dfdf0d632814b91814",
  *      "parents": ["7a5814dfdf0d632814b91814","5a5dezdfdf0d638824c91550"],
@@ -112,7 +117,7 @@ function GET_ChildsFolder(req, res, next) {
 }
 
 /**
- * @api {put} /folder/move/:_id Move a folder
+ * @api {put} /folder/move/:_id /PUT/ Move a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiParam {String} folder Folder ID of new location ('null' if it's a root folder)
@@ -136,7 +141,7 @@ function MOVE_Folder(req, res, next) {
 }
 
 /**
- * @api {put} /folder/rename/:_id Rename a folder
+ * @api {put} /folder/rename/:_id /PUT/ Rename a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiParam {String} name New name
@@ -160,7 +165,7 @@ function RENAME_Folder(req, res, next) {
 }
 
 /**
- * @api {delete} /folder/:_id Delete a folder
+ * @api {delete} /folder/:_id /DELETE/ Delete a folder
  * @apiGroup Folder
  * @apiParam {String} _id Folder ID
  * @apiSuccessExample {json} Success

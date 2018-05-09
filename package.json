@@ -7,19 +7,11 @@
     "type": "git",
     "url": "git://github.com/jeanbonlebon/110e8400-e29b-11d4-a716-446655440000.git"
   },
-  "apidoc": {
-    "name": "Supfile API",
-    "version": "1.0.0",
-    "description": "API for SupFile - Web App Storage and Sharing",
-    "url" : "https://api.supfile.org",
-    "template": {
-        "forceLanguage": "en"
-    }
-  },
   "scripts": {
     "start": "nodemon server.js",
     "apidoc": "apidoc -e \"(node_modules|.git|config|controllers|doc|helpers|models|tmp)\" -o doc -t C:\\Users\\Robin\\Desktop\\Projets\\apidoc-template",
     "apidoc_server": "apidoc -e \"(node_modules|.git|config|controllers|doc|helpers|models|tmp)\" -o doc -t /home/dev/assets/apidoc-template",
+    "shipit": "shipit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Robin Gross",
@@ -46,5 +38,26 @@
     "rmdir": "^1.2.0",
     "sudo-fs-promise": "^1.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "shipit-cli": "^4.0.2",
+    "shipit-deploy": "^4.0.2"
+  },
+  "apidoc": {
+    "name": "Supfile API",
+    "version": "1.0.0",
+    "description": "API for SupFile - Storage and Sharing App",
+    "url": "http://api.supfile.org",
+    "template": {
+      "forceLanguage": "en"
+    },
+    "order": [
+      "Auth",
+      "Folder",
+      "File"
+    ],
+    "header": {
+      "title": "How to use ?",
+      "filename": "README.md"
+    }
+  }
 }
