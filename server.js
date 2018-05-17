@@ -12,6 +12,8 @@ const UserRoute = require('./routes/userRoute.js'),
       FolderRoute = require('./routes/folderRoute.js'),
       FileRoute = require('./routes/fileRoute.js');
 
+const sshHelper = require('./helpers/sshHelper'),
+      env = process.env.NODE_ENV;
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database);
@@ -38,5 +40,7 @@ app.use('/auth', AuthRoute);
 app.use('/user', UserRoute);
 app.use('/folder', FolderRoute);
 app.use('/file', FileRoute);
+
+env == 'production' ? console.log(env, 'prod') : console.log(env, 'dev')
 
 app.listen(3000);

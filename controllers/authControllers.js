@@ -1,10 +1,13 @@
-const jwt = require('jsonwebtoken'),
+const env = process.env.NODE_ENV,
+      jwt = require('jsonwebtoken'),
       Q = require('q'),
       crypto = require('crypto'),
       User = require('../models/user'),
       sha3_256 = require('js-sha3').sha3_256,
       mkdirp = require('mkdirp'),
       config = require('../config/main');
+
+const sshHelper = require('../helpers/sshHelper');
 
 
 var controller = {};
@@ -54,14 +57,31 @@ function register(req) {
 
             let userInfo = setUserInfo(user);
 
-            mkdirp(config.data_path + '/' + sha3_256(user._id.toString()), function (err) {
-                if (err) deferred.reject(err)
+            if(env == 'production') {
 
-                deferred.resolve({
-                  token: 'JWT ' + generateToken(userInfo),
-                  user: userInfo
+                sshHelper('add_folder', sha3_256(user._id.toString()))
+                .then(function() {
+                    deferred.resolve({
+                        token: 'JWT ' + generateToken(userInfo),
+                        user: userInfo
+                    })
                 })
-            })
+                .catch(function(err) {
+                    deferred.reject(err)
+                })
+
+            } else {
+
+                mkdirp(config.data_path + '/' + sha3_256(user._id.toString()), function (err) {
+                    if (err) deferred.reject(err)
+    
+                    deferred.resolve({
+                      token: 'JWT ' + generateToken(userInfo),
+                      user: userInfo
+                    })
+                })
+
+            }
         })
     })
 

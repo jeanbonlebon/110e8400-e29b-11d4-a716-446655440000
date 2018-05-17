@@ -11,5 +11,12 @@ module.exports = {
     'appID' : '264544487772-pjnoseir23t4cfod8bu6bc24d020ra7q.apps.googleusercontent.com',
     'appSecret' : 'FrPHEbr9EnrhS2AwUn_Dx1HF'
   },
+  'sshConfig' : {
+    'hostname' : '167.99.45.221',
+    'username' : 'dev',
+    'password' : 'devDEV',
+    'pathKey' : 'C:\\Users\\Robin\\.ssh\\id_rsa.pub',
+    'rootPath' : '/var/sftp/uploads'
+  },
   'port': process.env.PORT || 3000
 }

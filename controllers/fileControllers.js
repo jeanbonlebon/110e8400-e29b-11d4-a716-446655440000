@@ -1,4 +1,5 @@
-const Q = require('q'),
+const env = process.env.NODE_ENV,
+      Q = require('q'),
       mongoose = require('mongoose'),
       _ = require('lodash'),
       config = require('../config/main'),
@@ -10,7 +11,8 @@ const Q = require('q'),
       Folder = require('../models/folder');
 
 const checkMalware = require('../helpers/checkMalware'),
-      getFilePath = require('../helpers/getFilePath');
+      getFilePath = require('../helpers/getFilePath'),  
+      sshHelper = require('../helpers/sshHelper');
 
 var controller = {};
 
@@ -61,12 +63,38 @@ function DOWNLOAD_File(file_id, _id) {
         if (_.isEmpty(file)) deferred.reject({status: 'Not Found', statusCode: 400})
 
         let filePath = getFilePath(file, _id)
-        fs.readFile(filePath, function(err, buffer) {
-            if (err) deferred.reject(err)
-            if (!buffer) deferred.reject({status: 'Not Found', statusCode: 400})
 
-            deferred.resolve(buffer)
-        })
+        if(env == 'production') {
+
+            sshHelper('get_file', { 'id' : file._id.toString(), 'path' : filePath })
+            .then(function(content) {
+
+                fs.readFile('./tmp/' + file._id.toString(), function(err, buffer) {
+                    if (err) deferred.reject(err)
+                    if (!buffer) deferred.reject({status: 'Not Found', statusCode: 400})
+
+                    fs.unlink('./tmp/' + file._id.toString(), function(err) {
+                        if (err) deferred.reject(err)
+                        
+                        deferred.resolve(buffer)
+                    })
+                })
+                
+            })
+            .catch(function(err) {
+                deferred.reject(err)
+            })
+
+        } else {
+
+            fs.readFile(filePath, function(err, buffer) {
+                if (err) deferred.reject(err)
+                if (!buffer) deferred.reject({status: 'Not Found', statusCode: 400})
+
+                deferred.resolve(buffer)
+            })
+
+        }
     })
 
     return deferred.promise
@@ -90,24 +118,39 @@ function POST_File(folder, dataFile, _id) {
 
         let extension = file.name.split(".")
         let pathTmp = './tmp/' + dataFile[0].filename
-        let path = config.data_path + '/' + sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
+        let path = sha3_256(user._id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]
 
 /*
         checkMalware(file.name, file.type, pathTmp)
         .then(res => {
 */
+
             file.save(function(err) {
                 if (err) deferred.reject(err)
 
-                mv(pathTmp, path, function(err) {
-                    if (err) deferred.reject(err)
+                if(env == 'production') {
 
-                    user.save(function(err) {
-                        if (err) deferred.reject(err)
-
+                    sshHelper('add_file', { 'pathTmp' : pathTmp, 'path': config.sshConfig.rootPath + '/' + path })
+                    .then(function() {
                         deferred.resolve()
                     })
-                })
+                    .catch(function(err) {
+                        deferred.reject(err)
+                    })
+
+                } else {
+
+                    mv(pathTmp, config.data_path + '/' + path, function(err) {
+                        if (err) deferred.reject(err)
+
+                        user.save(function(err) {
+                            if (err) deferred.reject(err)
+
+                            deferred.resolve()
+                        })
+                    })
+
+                }
             })
 /*
         })
@@ -169,19 +212,33 @@ function DELETE_File(file_id, _id) {
 
             let filePath = getFilePath(file, user._id)
 
-            fs.unlink(filePath, function(err) {
+            File.remove({ _id : file._id }, function(err) {
                 if (err) deferred.reject(err)
 
-                File.remove({ _id : file._id }, function(err) {
-                    if (err) deferred.reject(err)
+                if(env == 'production') {
 
-                    user.space_available += file.size
-                    user.save(function (err) {
-                        if (err) deferred.reject(err)
-
+                    sshHelper('remove_file', filePath)
+                    .then(function() {
                         deferred.resolve()
                     })
-                })
+                    .catch(function(err) {
+                        deferred.reject(err)
+                    })
+
+                } else {
+
+                    fs.unlink(filePath, function(err) {
+                        if (err) deferred.reject(err)
+
+                        user.space_available += file.size
+                        user.save(function (err) {
+                            if (err) deferred.reject(err)
+
+                            deferred.resolve()
+                        })
+                    })
+
+                }
             })
         })
     })

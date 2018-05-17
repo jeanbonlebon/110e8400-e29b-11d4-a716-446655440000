@@ -5,6 +5,8 @@ const mongoose = require('mongoose'),
       mkdirp = require('mkdirp'),
       bcrypt = require('bcrypt-nodejs');
 
+const sshHelper = require('../helpers/sshHelper');
+
 var UserSchema = new Schema ({
     email: {
       type: String,
@@ -82,11 +84,26 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
 
-                mkdirp(config.data_path + '/' + sha3_256(savedUser._id.toString()), function (err) {
-                    if (err) console.log(err)
+                if(env == 'production') {
 
-                    return cb(error, savedUser)
-                })
+                    sshHelper('add_folder', sha3_256(savedUser._id.toString()))
+                    .then(function() {
+                        cb(error, savedUser)
+                    })
+                    .catch(function(err) {
+                        console.log(err)
+                    })
+    
+                } else {
+
+                    mkdirp(config.data_path + '/' + sha3_256(savedUser._id.toString()), function (err) {
+                        if (err) console.log(err)
+
+                        return cb(error, savedUser)
+                    })
+
+                }
+
             })
         } else {
             return cb(err, user)
