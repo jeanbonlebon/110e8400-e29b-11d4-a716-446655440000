@@ -16,7 +16,15 @@ const sshHelper = require('./helpers/sshHelper'),
       env = process.env.NODE_ENV;
 
 mongoose.Promise = global.Promise;
-env == 'production' ? mongoose.connect(config.database_prod) : mongoose.connect(config.database_local);
+
+if(env == 'production') {
+      mongoose.connect(config.database_prod.host, {
+            user: config.database_prod.user,
+            pass: config.database_prod.password
+      })
+} else {
+      mongoose.connect(config.database_local);
+} 
 
 var app = express();
 

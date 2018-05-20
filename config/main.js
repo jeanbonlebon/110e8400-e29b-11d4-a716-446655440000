@@ -1,7 +1,11 @@
 module.exports = {
   'secret': 'super secret passphrase',
   'database_local': 'mongodb://localhost:27017/supfile',
-  'database_prod': 'mongodb://dev:devDEV@167.99.45.221:27017/supfile',
+  'database_prod': {
+    'host': 'mongodb://167.99.45.221:27017/supfile',
+    'user': 'dev',
+    'password': 'devDEV'
+  },
   'total_virus_apikey' : '757a1d88ac615d9436c6fecfdb63ecfe5c7732b098bf15d0eaf2382ab96f9c1c',
   'data_path' : '../folders',
   'fbConfig': {
