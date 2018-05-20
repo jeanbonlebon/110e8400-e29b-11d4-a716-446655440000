@@ -14,6 +14,7 @@
     "apidoc": "apidoc -e \"(node_modules|.git|config|controllers|doc|helpers|models|tmp)\" -o doc -t C:\\Users\\Robin\\Desktop\\Projets\\apidoc-template",
     "apidoc_server": "apidoc -e \"(node_modules|.git|config|controllers|doc|helpers|models|tmp)\" -o doc -t /home/dev/assets/apidoc-template",
     "shipit": "shipit",
+    "deploy": "npm run shipit staging deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Robin Gross",
