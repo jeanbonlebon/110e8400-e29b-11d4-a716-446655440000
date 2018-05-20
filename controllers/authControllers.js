@@ -44,12 +44,16 @@ function register(req) {
         if (checkUser) {
             return deferred.reject({ status : '422', error: 'That email address is already in use.' })
         }
+        
+        if (!validateEmail(email)) {
+            return deferred.reject({ status : '422', error: 'That email address is not valid.' })
+        }
 
         let user = new User({
-          email: email,
-          password: password,
-          profile: { firstName: firstName, lastName: lastName },
-          space_available: 32212254720
+            email: email,
+            password: password,
+            profile: { firstName: firstName, lastName: lastName },
+            space_available: 32212254720
         });
 
         user.save(function(err, user) {
@@ -88,6 +92,10 @@ function register(req) {
     return deferred.promise
 }
 
+function validateEmail(email) {
+    const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return pattern.test(String(email).toLowerCase());
+}
 
 function generateToken(user) {
     return jwt.sign(user, config.secret, {

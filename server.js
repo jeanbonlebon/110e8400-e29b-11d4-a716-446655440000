@@ -16,7 +16,7 @@ const sshHelper = require('./helpers/sshHelper'),
       env = process.env.NODE_ENV;
 
 mongoose.Promise = global.Promise;
-mongoose.connect(config.database);
+env == 'production' ? mongoose.connect(config.database_prod) : mongoose.connect(config.database_local);
 
 var app = express();
 
@@ -25,9 +25,9 @@ app.use('/files', express.static(config.data_path));
 app.use('/doc', express.static('doc'));
 
 app.use(multer({ dest: './tmp/',
-    rename: function (fieldname, filename) {
-        return filename;
-    },
+      rename: function (fieldname, filename) {
+            return filename;
+      },
 }).any());
 
 app.use(bodyParser.urlencoded({ extended: true }));
