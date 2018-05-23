@@ -7,7 +7,8 @@ module.exports = {
     'password': 'devDEV'
   },
   'total_virus_apikey' : '757a1d88ac615d9436c6fecfdb63ecfe5c7732b098bf15d0eaf2382ab96f9c1c',
-  'data_path' : '../folders',
+  'data_path_local' : '../folders',
+  'data_path_prod' : '/var/mount/data',
   'fbConfig': {
     'appID' : '1487784628006176',
     'appSecret' : 'bcd0af926a4722fa8f2beb90b54798f4'

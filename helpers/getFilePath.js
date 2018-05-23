@@ -10,8 +10,10 @@ module.exports = function getFilePath(file, user_id) {
     
     if(env == 'sandbox') {
         rootPath = config.sshConfig.rootPath;
+    } else if(env == 'production') {
+        rootPath = config.data_path_prod;
     } else {
-        rootPath = config.data_path;
+        rootPath = config.data_path_local;
     }
 
     let path = rootPath + '/' + sha3_256(user_id.toString()) + '/' + file._id.toString() + '.' +  extension[extension.length -1]

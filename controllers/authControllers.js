@@ -75,8 +75,11 @@ function register(req) {
                 })
 
             } else {
-
-                mkdirp(config.data_path + '/' + sha3_256(user._id.toString()), function (err) {
+                
+                let rootPath;
+                env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+                
+                mkdirp(rootPath + '/' + sha3_256(user._id.toString()), function (err) {
                     if (err) deferred.reject(err)
     
                     deferred.resolve({

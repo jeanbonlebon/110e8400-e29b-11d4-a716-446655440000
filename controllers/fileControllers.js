@@ -140,7 +140,10 @@ function POST_File(folder, dataFile, _id) {
 
                 } else {
 
-                    mv(pathTmp, config.data_path + '/' + path, function(err) {
+                    let rootPath;
+                    env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+     
+                    mv(pathTmp, rootPath + '/' + path, function(err) {
                         if (err) deferred.reject(err)
 
                         user.save(function(err) {

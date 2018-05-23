@@ -29,8 +29,13 @@ if(env == 'production') {
 var app = express();
 
 app.use(cors());
-app.use('/files', express.static(config.data_path));
 app.use('/doc', express.static('doc'));
+
+if(env == 'production') {
+      app.use('/files', express.static(config.data_path_prod));
+} else {
+      app.use('/files', express.static(config.data_path_local));
+}
 
 app.use(multer({ dest: './tmp/',
       rename: function (fieldname, filename) {
