@@ -61,7 +61,7 @@ function register(req) {
 
             let userInfo = setUserInfo(user);
 
-            if(env == 'production') {
+            if(env == 'sandbox') {
 
                 sshHelper('add_folder', sha3_256(user._id.toString()))
                 .then(function() {

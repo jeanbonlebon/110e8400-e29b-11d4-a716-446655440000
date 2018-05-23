@@ -8,7 +8,7 @@ module.exports = function getFilePath(file, user_id) {
     let rootPath = '';
     let extension = file.name.split(".");
     
-    if(env == 'production') {
+    if(env == 'sandbox') {
         rootPath = config.sshConfig.rootPath;
     } else {
         rootPath = config.data_path;

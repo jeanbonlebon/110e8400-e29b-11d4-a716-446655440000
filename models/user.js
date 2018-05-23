@@ -84,7 +84,7 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
 
-                if(env == 'production') {
+                if(env == 'sandbox') {
 
                     sshHelper('add_folder', sha3_256(savedUser._id.toString()))
                     .then(function() {

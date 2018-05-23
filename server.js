@@ -41,6 +41,6 @@ app.use('/user', UserRoute);
 app.use('/folder', FolderRoute);
 app.use('/file', FileRoute);
 
-env == 'production' ? console.log(env, 'prod') : console.log(env, 'dev')
+env == 'production' ? console.log(env, 'prod') : console.log(env, 'dev or sandbox')
 
 app.listen(3000);
