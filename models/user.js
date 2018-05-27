@@ -85,7 +85,7 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
 
-                if(env == 'production') {
+                if(env == 'sandbox') {
 
                     sshHelper('add_folder', sha3_256(savedUser._id.toString()))
                     .then(function() {
@@ -97,7 +97,10 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
     
                 } else {
 
-                    mkdirp(config.data_path + '/' + sha3_256(savedUser._id.toString()), function (err) {
+                    let rootPath;
+                    env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+                    
+                    mkdirp(rootPath + '/' + sha3_256(savedUser._id.toString()), function (err) {
                         if (err) console.log(err)
 
                         return cb(error, savedUser)
@@ -131,7 +134,10 @@ UserSchema.statics.upsertGlUser = function(accessToken, refreshToken, profile, c
             newUser.save(function(error, savedUser) {
                 if (error)  console.log(error)
 
-                mkdirp(config.data_path + '/' + sha3_256(savedUser._id.toString()), function (err) {
+                let rootPath;
+                env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+                
+                mkdirp(rootPath + '/' + sha3_256(savedUser._id.toString()), function (err) {
                     if (err) console.log(err)
 
                     return cb(error, savedUser)

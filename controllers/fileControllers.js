@@ -64,7 +64,7 @@ function DOWNLOAD_File(file_id, _id) {
 
         let filePath = getFilePath(file, _id)
 
-        if(env == 'production') {
+        if(env == 'sandbox') {
 
             sshHelper('get_file', { 'id' : file._id.toString(), 'path' : filePath })
             .then(function(content) {
@@ -128,7 +128,7 @@ function POST_File(folder, dataFile, _id) {
             file.save(function(err) {
                 if (err) deferred.reject(err)
 
-                if(env == 'production') {
+                if(env == 'sandbox') {
 
                     sshHelper('add_file', { 'pathTmp' : pathTmp, 'path': config.sshConfig.rootPath + '/' + path })
                     .then(function() {
@@ -140,7 +140,10 @@ function POST_File(folder, dataFile, _id) {
 
                 } else {
 
-                    mv(pathTmp, config.data_path + '/' + path, function(err) {
+                    let rootPath;
+                    env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+     
+                    mv(pathTmp, rootPath + '/' + path, function(err) {
                         if (err) deferred.reject(err)
 
                         user.save(function(err) {
@@ -215,7 +218,7 @@ function DELETE_File(file_id, _id) {
             File.remove({ _id : file._id }, function(err) {
                 if (err) deferred.reject(err)
 
-                if(env == 'production') {
+                if(env == 'sandbox') {
 
                     sshHelper('remove_file', filePath)
                     .then(function() {

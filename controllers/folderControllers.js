@@ -1,4 +1,5 @@
-const Q = require('q'),
+const env = process.env.NODE_ENV,
+      Q = require('q'),
       mongoose = require('mongoose'),
       _ = require('lodash'),
       config = require('../config/main'),
@@ -40,7 +41,10 @@ function POST_Folder(req, _id) {
             parent: null,
         });
 
-        let path = config.data_path + '/' + sha3_256(user._id.toString())
+        let rootPath;
+        env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+
+        let path = rootPath + '/' + sha3_256(user._id.toString())
 
         if(req.parent != 'null') {
 
@@ -146,7 +150,10 @@ function MOVE_Folder(toID, fromID, userID) {
         Folder.find({ parents : fromFolder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
-            let racinePath = config.data_path + '/' + sha3_256(fromFolder.user.toString())
+            let rootPath;
+            env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+    
+            let racinePath = rootPath + '/' + sha3_256(fromFolder.user.toString())
             let oldPath = fromFolder.path
 
             if(childs.length) {
@@ -296,7 +303,10 @@ function DELETE_Folder(id, userID) {
         Folder.find({ parents : folder._id }).lean().exec(function(err, childs) {
             if (err) deferred.reject(err)
 
-            let path = config.data_path + '/' + sha3_256(folder.user.toString()) + folder.path
+            let rootPath;
+            env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
+    
+            let path = rootPath + '/' + sha3_256(folder.user.toString()) + folder.path
 
             if(childs.length) {
 
