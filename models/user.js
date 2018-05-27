@@ -1,4 +1,5 @@
-const mongoose = require('mongoose'),
+const env = process.env.NODE_ENV,
+      mongoose = require('mongoose'),
       Schema = mongoose.Schema,
       config = require('../config/main'),
       sha3_256 = require('js-sha3').sha3_256,

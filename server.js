@@ -10,7 +10,8 @@ const express = require('express'),
 const UserRoute = require('./routes/userRoute.js'),
       AuthRoute = require('./routes/authRoute.js'),
       FolderRoute = require('./routes/folderRoute.js'),
-      FileRoute = require('./routes/fileRoute.js');
+      FileRoute = require('./routes/fileRoute.js'),
+      ShareRoute = require('./routes/shareRoute.js');
 
 const sshHelper = require('./helpers/sshHelper'),
       env = process.env.NODE_ENV;
@@ -48,6 +49,7 @@ app.use('/auth', AuthRoute);
 app.use('/user', UserRoute);
 app.use('/folder', FolderRoute);
 app.use('/file', FileRoute);
+app.use('/share', ShareRoute);
 
 env == 'production' ? console.log(env, 'prod') : console.log(env, 'dev')
 

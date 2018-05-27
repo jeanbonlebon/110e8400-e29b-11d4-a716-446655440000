@@ -23,6 +23,10 @@ var FolderSchema = new Schema ({
     path: {
       type: String,
     },
+    public: {
+      type: Boolean,
+      default: false
+    },
     },
     {
       timestamps: true
