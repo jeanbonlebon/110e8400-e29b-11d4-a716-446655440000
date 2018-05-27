@@ -50,11 +50,10 @@ function PUT_Share(_id, userID, status) {
     var deferred = Q.defer()
 
     let active;
-    status == true ? active == false : active == true;
+    status == true ? active = false : active = true;
 
     Folder.findOne({ _id: _id,  public: active, user : userID }, function(err, folder) {
         if (err) deferred.reject(err)
-        if (!folder) deferred.reject({status: 'Not Found', statusCode: 400})
 
         folder.public = status;
 
