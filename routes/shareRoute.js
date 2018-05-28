@@ -24,7 +24,8 @@ function GET_Shares(req, res, next) {
 }
 
 function GET_Share(req, res, next) {
-    ShareControllers.GET_Share(req.params.id, req.user._id)
+    console.log(req.params);
+    ShareControllers.GET_Share(req.params.id)
         .then(function (folder) {
             res.send(folder)
         })
@@ -33,6 +34,20 @@ function GET_Share(req, res, next) {
         })
 }
 
+/**
+ * @api {put} /share/:_id /PUT/ Change Status of Share Folder
+ * @apiGroup Folder
+ * @apiParam {String} _id Folder ID
+ * @apiParam {String} status true if shared, false is not
+ * @apiParamExample {json} Input
+ *    {
+ *      "status": true,
+ *    }
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ * @apiErrorExample {json} Errors
+ *    HTTP/1.1 500 Internal Server Error
+ */
 function PUT_Share(req, res, next) {
     ShareControllers.PUT_Share(req.params.id, req.user._id, req.body.status)
         .then(function () {

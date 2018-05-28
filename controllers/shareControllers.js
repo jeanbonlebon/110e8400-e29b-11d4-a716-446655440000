@@ -28,19 +28,13 @@ function GET_Shares(userID) {
     return deferred.promise
 }
 
-function GET_Share(_id, userID) {
+function GET_Share(_id) {
     var deferred = Q.defer()
 
-    Folder.findOne({ _id: _id,  public: true, user : userID }, function(err, folder) {
+    Folder.findOne({ _id: _id,  public: true }, function(err, folder) {
         if (err) deferred.reject(err)
-        if (!folder) deferred.reject({status: 'Not Found', statusCode: 400})
-
-        Folder.find({ parent: _id, user : userID }, function(err, folders) {
-            if (err) deferred.reject(err)
     
-            deferred.resolve(folders)
-        })
-
+        deferred.resolve(folder)
     })
 
     return deferred.promise
