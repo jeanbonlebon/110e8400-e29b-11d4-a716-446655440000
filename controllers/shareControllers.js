@@ -10,23 +10,11 @@ const Q = require('q'),
 
 var controller = {};
 
-controller.GET_Shares = GET_Shares;
 controller.GET_Share = GET_Share;
 controller.PUT_Share = PUT_Share;
 
 module.exports = controller;
 
-function GET_Shares(userID) {
-    var deferred = Q.defer()
-
-    Folder.find({ public: true, user : userID }, function(err, folders) {
-        if (err) deferred.reject(err)
-
-        deferred.resolve(folders)
-    })
-
-    return deferred.promise
-}
 
 function GET_Share(_id) {
     var deferred = Q.defer()

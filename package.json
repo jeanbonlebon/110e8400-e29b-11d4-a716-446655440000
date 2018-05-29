@@ -59,7 +59,9 @@
     "order": [
       "Auth",
       "Folder",
-      "File"
+      "File",
+      "Share",
+      "User"
     ],
     "header": {
       "title": "How to use ?",
