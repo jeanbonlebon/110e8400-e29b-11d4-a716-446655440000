@@ -7,16 +7,16 @@ module.exports = function sshHelper(type, data) {
     let ssh = new node_ssh()
 
     ssh.connect({
-        host: config.sshConfig.hostname,
-        username: config.sshConfig.username,
-        password: config.sshConfig.password
+        host: 'config.sshConfig.hostname',
+        username: 'config.sshConfig.username',
+        password: 'config.sshConfig.password'
     })
     .then(function() {
 
         switch(type) {
         
         case 'add_folder':
-            ssh.execCommand('mkdir -p ' + data, { cwd: config.sshConfig.rootPath })
+            ssh.execCommand('mkdir -p ' + data, { cwd: 'config.sshConfig.rootPath' })
             .then(function(result) {
                 deferred.resolve()
             })

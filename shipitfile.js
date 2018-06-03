@@ -10,13 +10,14 @@ module.exports = shipit => {
       keepReleases: 2,
     },
     staging: {
-      servers: 'dev@192.168.222.146',
+      //servers: 'dev@192.168.222.146',
+      servers: 'dev@167.99.45.221',
     },
   })
   
   shipit.on('deployed', function() {      
     console.log('deploiement is over')
-    shipit.start('after_deploy')
+    shipit.start('after_deploy_ocean')
   })
 
   shipit.task('after_deploy', function() {
@@ -33,4 +34,20 @@ module.exports = shipit => {
       })
     })
   })
+
+  shipit.task('after_deploy_ocean', function() {
+    shipit.remote('cd /var/www/supfile.org/api/current && npm install')
+    .then(function(res) {
+      console.log('Dependencies are installed')
+      shipit.remote('cd /var/www/supfile.org/api/current && npm run apidoc_server')      
+      .then(function(res) {
+        console.log('Documentation is generated')
+        shipit.remote('pm2 start /var/www/supfile.org/api/current/server.js')
+        .then(function(res) {
+          console.log('Server is lauched')
+        })
+      })
+    })
+  })
+
 }

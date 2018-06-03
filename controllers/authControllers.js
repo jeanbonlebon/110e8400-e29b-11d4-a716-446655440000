@@ -7,8 +7,6 @@ const env = process.env.NODE_ENV,
       mkdirp = require('mkdirp'),
       config = require('../config/main');
 
-const sshHelper = require('../helpers/sshHelper');
-
 
 var controller = {};
 
@@ -61,34 +59,17 @@ function register(req) {
 
             let userInfo = setUserInfo(user);
 
-            if(env == 'sandbox') {
-
-                sshHelper('add_folder', sha3_256(user._id.toString()))
-                .then(function() {
-                    deferred.resolve({
-                        token: 'JWT ' + generateToken(userInfo),
-                        user: userInfo
-                    })
-                })
-                .catch(function(err) {
-                    deferred.reject(err)
-                })
-
-            } else {
+            let rootPath;
+            env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
                 
-                let rootPath;
-                env == 'production' ? rootPath = config.data_path_prod : rootPath = config.data_path_local
-                
-                mkdirp(rootPath + '/' + sha3_256(user._id.toString()), function (err) {
-                    if (err) deferred.reject(err)
+            mkdirp(rootPath + '/' + sha3_256(user._id.toString()), function (err) {
+                if (err) deferred.reject(err)
     
-                    deferred.resolve({
-                      token: 'JWT ' + generateToken(userInfo),
-                      user: userInfo
-                    })
+                deferred.resolve({
+                    token: 'JWT ' + generateToken(userInfo),
+                    user: userInfo
                 })
-
-            }
+            })
         })
     })
 

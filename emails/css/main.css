@@ -1,0 +1,85 @@
+*, html {
+    padding:0;
+    margin: 0;
+}
+
+/**** MAIN *****/
+body {
+    margin: 0;
+    padding: 0;
+}
+.align {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/**** HEADER *****/
+.header { 
+    padding-top: 12px;
+    padding-left: 45px;
+}
+.background {
+    height: 100px;
+    width: 100%;
+    background-image: url(../assets/bg.jpg);
+}
+
+/**** TITLE ******/
+h1.title {
+    color: #FFF;
+    text-transform: uppercase;
+}
+h1.title span {
+    color: #FFF;
+    font-size: 16px;
+    text-transform: unset;
+}
+h3 {
+    margin-bottom: 20px;
+}
+
+/**** CONTAINER *****/
+#container {
+    padding: 50px;
+}
+
+#container p {
+    margin-bottom: 8px;
+}
+
+a.link {
+    width: 100%;
+    text-align: center;
+    display: block;
+    color: #FFF;
+    text-decoration: none;
+    background-color: #e65100;
+    text-transform: uppercase;
+    padding: 15px 0px;
+    font-size: 16px;
+    margin-top: 30px;
+}
+
+/**** FOOTER *****/
+#footer {
+    position: absolute;
+    bottom: 0;
+    height: 200px;
+    background-color: #ffe0b2;
+    width:100%;
+}
+#footer .align {
+    vertical-align: top;
+    width: 32.25%;
+    color: #000;
+}
+#footer .align h3 {
+    text-align: center;
+    margin: 10px 0px;
+}
+#footer .align p {
+    padding: 0px 5px;
+}
+#footer .align p.title:last-child {
+    margin-top: 5px;
+}
